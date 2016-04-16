@@ -1,4 +1,4 @@
-package nl.joozey.shapeshifter;
+package nl.joozey.shapeshifter.main;
 
 import com.badlogic.gdx.graphics.Color;
 

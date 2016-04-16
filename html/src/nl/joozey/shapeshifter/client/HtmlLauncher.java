@@ -3,7 +3,7 @@ package nl.joozey.shapeshifter.client;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.backends.gwt.GwtApplication;
 import com.badlogic.gdx.backends.gwt.GwtApplicationConfiguration;
-import nl.joozey.shapeshifter.ShapeshifterMain;
+import nl.joozey.shapeshifter.main.ShapeshifterMain;
 
 public class HtmlLauncher extends GwtApplication {
 

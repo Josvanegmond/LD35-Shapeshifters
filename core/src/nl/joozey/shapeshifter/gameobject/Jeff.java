@@ -1,4 +1,4 @@
-package nl.joozey.shapeshifter;
+package nl.joozey.shapeshifter.gameobject;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,10 +10,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
+import nl.joozey.shapeshifter.main.Constants;
+import nl.joozey.shapeshifter.util.InputManager;
+import nl.joozey.shapeshifter.helper.CollisionHelper;
+
 /**
  * Created by mint on 16-4-16.
  */
-public class PlayerSquare extends GameObject implements InputProcessor {
+public class Jeff extends GameObject implements InputProcessor {
 
     private ShapeRenderer _shapeRenderer;
 
@@ -32,7 +36,7 @@ public class PlayerSquare extends GameObject implements InputProcessor {
     private Timer _barrelRollTimer;
     private Timer.Task _barrelRollTask;
 
-    public PlayerSquare(float x, float y) {
+    public Jeff(float x, float y) {
         _shapeRenderer = new ShapeRenderer();
         _shapeRenderer.setAutoShapeType(true);
 
@@ -60,7 +64,7 @@ public class PlayerSquare extends GameObject implements InputProcessor {
             case 0:
                 setSize(30, 60);
                 _color = new Color(Constants.JEFF_COLOR);
-                _jumpForce = 1000f;
+                _jumpForce = 800f;
                 break;
             case 1:
                 setSize(150, 10);
@@ -75,7 +79,7 @@ public class PlayerSquare extends GameObject implements InputProcessor {
             case 3:
                 setSize(15, 15);
                 _color = new Color(Constants.JEFF_COLOR).add(.25f, 0.1f, -0.1f, 1f);
-                _jumpForce = 1200f;
+                _jumpForce = 1100f;
                 break;
             case 4:
                 setSize(40, 40);
@@ -96,7 +100,6 @@ public class PlayerSquare extends GameObject implements InputProcessor {
         Rectangle dimension = getDimension();
 
         dimension.y += _jumpForceModifier * factor;
-        System.out.println("Jumpforce: " + _jumpForceModifier);
         _jumpForceModifier = Math.max(0, _jumpForceModifier - 700 * factor);
 
         dimension.y -= _gravity * factor;

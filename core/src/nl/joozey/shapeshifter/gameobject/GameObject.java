@@ -1,4 +1,4 @@
-package nl.joozey.shapeshifter;
+package nl.joozey.shapeshifter.gameobject;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;

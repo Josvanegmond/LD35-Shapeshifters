@@ -1,4 +1,4 @@
-package nl.joozey.shapeshifter;
+package nl.joozey.shapeshifter.util;
 
 import com.badlogic.gdx.InputMultiplexer;
 

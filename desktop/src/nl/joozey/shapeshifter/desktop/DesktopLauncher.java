@@ -2,7 +2,7 @@ package nl.joozey.shapeshifter.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import nl.joozey.shapeshifter.ShapeshifterMain;
+import nl.joozey.shapeshifter.main.ShapeshifterMain;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {

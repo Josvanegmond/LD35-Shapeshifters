@@ -1,26 +1,22 @@
-package nl.joozey.shapeshifter;
+package nl.joozey.shapeshifter.helper;
 
 import com.badlogic.gdx.math.Rectangle;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.joozey.shapeshifter.gameobject.GameObject;
+import nl.joozey.shapeshifter.level.LevelManager;
+
 /**
  * Created by mint on 16-4-16.
  */
 public class CollisionHelper {
 
-    private static List<GameObject> _gameObjectList = new ArrayList<>();
-
-    public static void setGameObjectList(List<GameObject> gameObjectList) {
-        _gameObjectList = gameObjectList;
-    }
-
     public static Rectangle check(GameObject collider, Rectangle end) {
 
         Rectangle newEnd = new Rectangle(end);
-        System.out.println("Gameobjects: " + _gameObjectList.size());
-        for (GameObject gameObject : _gameObjectList) {
+        for (GameObject gameObject : LevelManager.getInstance().getAllGameObjects()) {
 
             if (gameObject == collider) {
                 continue;

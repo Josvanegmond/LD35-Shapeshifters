@@ -1,6 +1,5 @@
-package nl.joozey.shapeshifter;
+package nl.joozey.shapeshifter.gameobject;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -67,5 +66,9 @@ public class FairyBlimp extends GameObject {
         setPosition(-100, 0);
         setSize(0, 0);
         return true;
+    }
+
+    public boolean isGrabbed() {
+        return _grabbed;
     }
 }
