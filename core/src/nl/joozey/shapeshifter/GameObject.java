@@ -19,6 +19,14 @@ public abstract class GameObject {
 
     public abstract void act();
 
+    public boolean isGrabbableBy(GameObject gameObject) {
+        return false;
+    }
+
+    public void hitObject(GameObject gameObject) {
+
+    }
+
     public void setPosition(Vector2 pos) {
         _dimension.set(pos.x, pos.y, _dimension.width, _dimension.height);
     }

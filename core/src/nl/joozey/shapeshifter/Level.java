@@ -12,11 +12,22 @@ import java.util.List;
 public class Level {
 
     private List<GameObject> _gameObjectList;
+    private List<GameObject> _blimpList;
 
     public Level() {
         _gameObjectList = new ArrayList<>();
+        _blimpList = new ArrayList<>();
 
-        _gameObjectList.add(new PlayerSquare());
+        //floor
+        _gameObjectList.add(new LevelObject(0, 0, Gdx.graphics.getWidth(), 20));
+
+        for(int i = 0; i < 10; i++) {
+            float x = (float)Math.random() * Gdx.graphics.getWidth();
+            float y = (float)Math.random() * Gdx.graphics.getHeight();
+            _blimpList.add(new FairyBlimp(x, y));
+        }
+
+        _gameObjectList.addAll(_blimpList);
 
         for(int i = 0; i < 10; i++) {
             float w = (float)Math.random() * 100 + 20;
@@ -25,6 +36,9 @@ public class Level {
             float y = (float)Math.random() * Gdx.graphics.getHeight() - h;
             _gameObjectList.add(new LevelObject(x, y, w, h));
         }
+
+        //player
+        _gameObjectList.add(new PlayerSquare(20, 150));
 
         CollisionHelper.setGameObjectList(_gameObjectList);
     }

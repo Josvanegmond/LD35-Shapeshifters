@@ -27,21 +27,27 @@ public class CollisionHelper {
             }
 
             if (gameObject.getDimension().overlaps(end) || end.overlaps(gameObject.getDimension())) {
-                Rectangle rect = gameObject.getDimension();
-                Rectangle colliderRect = collider.getDimension();
 
-                Rectangle left = new Rectangle(end.x, colliderRect.y, 1, colliderRect.height);
-                Rectangle right = new Rectangle(end.x + end.width, colliderRect.y, 1, colliderRect.height);
-                if (rect.overlaps(left) ||
-                        rect.overlaps(right)) {
-                    newEnd.x = collider.getPosition().x;
-                }
+                if(gameObject.isGrabbableBy(collider)) {
+                    collider.hitObject(gameObject);
 
-                Rectangle top = new Rectangle(colliderRect.x, end.y, colliderRect.getWidth(), 1);
-                Rectangle bottom = new Rectangle(colliderRect.x, end.y + end.height, colliderRect.getWidth(), 1);
-                if (rect.overlaps(top) ||
-                        rect.overlaps(bottom)) {
-                    newEnd.y = collider.getPosition().y;
+                } else {
+                    Rectangle rect = gameObject.getDimension();
+                    Rectangle colliderRect = collider.getDimension();
+
+                    Rectangle left = new Rectangle(end.x, colliderRect.y, 1, colliderRect.height);
+                    Rectangle right = new Rectangle(end.x + end.width, colliderRect.y, 1, colliderRect.height);
+                    if (rect.overlaps(left) ||
+                            rect.overlaps(right)) {
+                        newEnd.x = collider.getPosition().x;
+                    }
+
+                    Rectangle top = new Rectangle(colliderRect.x, end.y, colliderRect.getWidth(), 1);
+                    Rectangle bottom = new Rectangle(colliderRect.x, end.y + end.height, colliderRect.getWidth(), 1);
+                    if (rect.overlaps(top) ||
+                            rect.overlaps(bottom)) {
+                        newEnd.y = collider.getPosition().y;
+                    }
                 }
             }
         }
