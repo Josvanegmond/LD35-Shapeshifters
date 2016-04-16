@@ -23,8 +23,8 @@ public class FairyBlimp extends GameObject {
         _shapeRenderer = new ShapeRenderer();
         _shapeRenderer.setAutoShapeType(true);
 
-        _angle = (float)Math.random() * 360;
-        _speed = 50 + (float)Math.random() * 50;
+        _angle = (float) Math.random() * 360;
+        _speed = 50 + (float) Math.random() * 50;
         _radius = 20;
 
         setPosition(x, y);
@@ -35,7 +35,7 @@ public class FairyBlimp extends GameObject {
 
     @Override
     public void draw(Batch batch) {
-        if(!_grabbed) {
+        if (!_grabbed) {
             Color _color = new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 1f);
             Vector2 pos = getPosition();
             Vector2 size = getSize();
@@ -50,7 +50,7 @@ public class FairyBlimp extends GameObject {
 
     @Override
     public void act() {
-        if(!_grabbed) {
+        if (!_grabbed) {
             _angle += _speed * Gdx.graphics.getDeltaTime();
 
             Vector2 pos = getPosition();
@@ -62,10 +62,22 @@ public class FairyBlimp extends GameObject {
 
     @Override
     public boolean isGrabbableBy(GameObject gameObject) {
-        _grabbed = true;
-        setPosition(-100, 0);
-        setSize(0, 0);
-        return true;
+        if (!_grabbed && gameObject instanceof Jeff) {
+            _grabbed = true;
+            setPosition(-100, 0);
+            setSize(0, 0);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void hitObject(GameObject gameObject) {
+        if (!_grabbed && gameObject instanceof Jeff) {
+            _grabbed = true;
+            setPosition(-100, 0);
+            setSize(0, 0);
+        }
     }
 
     public boolean isGrabbed() {

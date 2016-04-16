@@ -1,9 +1,12 @@
 package nl.joozey.shapeshifter.level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import nl.joozey.shapeshifter.gameobject.GameObject;
 
@@ -12,52 +15,46 @@ import nl.joozey.shapeshifter.gameobject.GameObject;
  */
 public class Level {
 
-    private LevelManager _levelManager;
-    private Texture _greenBackground;
-    private Texture _grayBackground;
+    protected BitmapFont _font;
+    protected ShapeRenderer _shapeRenderer;
+    protected LevelManager _levelManager;
+    protected Texture _greenBackground;
+    protected Texture _grayBackground;
+    protected String _message = "";
+
+    protected float _floorLevel = 70;
 
     public Level() {
+
+        _font = new BitmapFont(Gdx.files.internal("forced_square.fnt"), Gdx.files.internal("forced_square.png"), false);
+        _font.setColor(Color.WHITE);
+        _shapeRenderer = new ShapeRenderer();
+        _shapeRenderer.setAutoShapeType(true);
+
         _levelManager = LevelManager.getInstance();
 
         _greenBackground = new Texture("greenscene.png");
         _grayBackground = new Texture("grayscene.png");
-
-        //floor
-        _levelManager.createWall(this, 0, 0, Gdx.graphics.getWidth(), 20);
-
-        for(int i = 0; i < 10; i++) {
-            float x = (float)Math.random() * Gdx.graphics.getWidth();
-            float y = (float)Math.random() * Gdx.graphics.getHeight();
-            _levelManager.createBlimp(this, x, y);
-        }
-
-        for(int i = 0; i < 10; i++) {
-            float w = (float)Math.random() * 100 + 20;
-            float h = (float)Math.random() * 100 + 20;
-            float x = (float)Math.random() * Gdx.graphics.getWidth() - w;
-            float y = (float)Math.random() * Gdx.graphics.getHeight() - h;
-
-            _levelManager.createWall(this, x, y, w, h);
-        }
-
-        //player
-        _levelManager.createJeff(this, 20, 150);
     }
 
-    public void act() {
-        for(GameObject gameObject : _levelManager.getAllGameObjects()) {
-            gameObject.act();
+    public void run() {
+        for (GameObject gameObject : _levelManager.getAllGameObjects()) {
+            gameObject.run();
         }
     }
 
-    public void draw(Batch batch) {
+    public void drawScene(Batch batch) {
+
+    }
+
+    public final void draw(Batch batch) {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
         float takenBlimps = LevelManager.getInstance().getTakenBlimpCount();
         float totalBlimps = LevelManager.getInstance().getBlimpCount();
 
         float alpha = 1;
-        if(totalBlimps > 0) {
+        if (totalBlimps > 0) {
             alpha = 1f - takenBlimps / totalBlimps;
         }
 
@@ -67,18 +64,29 @@ public class Level {
         batch.setColor(1f, 1f, 1f, alpha);
         batch.draw(_greenBackground, 0, 0);
 
+        batch.end();
+        batch.begin();
+
+        _shapeRenderer.begin();
+
+        //game scene
+        drawScene(batch);
+
+        //dialog box
+        _shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+        _shapeRenderer.setColor(Color.BLACK);
+        _shapeRenderer.rect(40, 20, 720, _floorLevel - 40);
+        _shapeRenderer.end();
 
         batch.end();
-
         batch.begin();
-        for(GameObject gameObject : _levelManager.getAllGameObjects()) {
-            gameObject.draw(batch);
-        }
 
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(_message != "") {
+            _font.draw(batch, _message, 60, 38);
         }
+    }
+
+    public void setMessage(String message) {
+        _message = message;
     }
 }

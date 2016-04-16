@@ -10,9 +10,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
+import nl.joozey.shapeshifter.helper.CollisionHelper;
 import nl.joozey.shapeshifter.main.Constants;
 import nl.joozey.shapeshifter.util.InputManager;
-import nl.joozey.shapeshifter.helper.CollisionHelper;
 
 /**
  * Created by mint on 16-4-16.
@@ -112,9 +112,13 @@ public class Jeff extends GameObject implements InputProcessor {
             dimension.x += _speed * factor;
         }
 
+        if (_moveLeft || _moveRight) {
+            System.out.println(dimension.x + ", " + dimension.y + ", " + dimension.width + ", " + dimension.height);
+        }
+
         dimension = CollisionHelper.check(this, dimension);
-        if(dimension.y == this.getPosition().y) {
-            if(_jumpForceModifier > 0 && !_hitFloor) {
+        if (dimension.y == this.getPosition().y) {
+            if (_jumpForceModifier > 0 && !_hitFloor) {
                 _jumpForceModifier = _gravity - 1;
             }
             _hitFloor = true;
@@ -165,7 +169,7 @@ public class Jeff extends GameObject implements InputProcessor {
         if (keycode == Input.Keys.SPACE) {
             if (_hitFloor) {
                 _jumpForceModifier = _jumpForce;
-            } else if(_shape == 0) {
+            } else if (_shape == 0) {
                 synchronized (_barrelRollTask) {
                     if (!_barrelRollTask.isScheduled()) {
                         _barrelRollTimer.scheduleTask(_barrelRollTask, 0, 0.001f, 360);

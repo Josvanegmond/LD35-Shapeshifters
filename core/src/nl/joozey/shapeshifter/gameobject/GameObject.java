@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 public abstract class GameObject {
 
     private Rectangle _dimension;
+    private boolean _freeze;
 
     public GameObject() {
         _dimension = new Rectangle();
@@ -18,6 +19,11 @@ public abstract class GameObject {
     public abstract void draw(Batch batch);
 
     public abstract void act();
+    public final void run() {
+        if(!_freeze) {
+            act();
+        }
+    }
 
     public boolean isGrabbableBy(GameObject gameObject) {
         return false;
@@ -50,5 +56,13 @@ public abstract class GameObject {
 
     public Rectangle getDimension() {
         return new Rectangle(_dimension);
+    }
+
+    public void freeze() {
+        freeze(true);
+    }
+
+    public void freeze(boolean freeze) {
+        _freeze = freeze;
     }
 }

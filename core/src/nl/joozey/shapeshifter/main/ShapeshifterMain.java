@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import nl.joozey.shapeshifter.level.Level;
+import nl.joozey.shapeshifter.level.Level1;
 import nl.joozey.shapeshifter.util.InputManager;
 
 public class ShapeshifterMain extends ApplicationAdapter {
@@ -16,7 +17,7 @@ public class ShapeshifterMain extends ApplicationAdapter {
     @Override
     public void create() {
         _batch = new SpriteBatch();
-        _level = new Level();
+        _level = new Level1();
 
         Gdx.input.setInputProcessor(InputManager.getInstance());
     }
@@ -28,7 +29,7 @@ public class ShapeshifterMain extends ApplicationAdapter {
 
         _batch.begin();
 
-        _level.act();
+        _level.run();
         _level.draw(_batch);
 
         _batch.end();

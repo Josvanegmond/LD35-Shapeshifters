@@ -28,6 +28,7 @@ public class CollisionHelper {
                     collider.hitObject(gameObject);
 
                 } else {
+                    gameObject.hitObject(collider);
                     Rectangle rect = gameObject.getDimension();
                     Rectangle colliderRect = collider.getDimension();
 
@@ -45,6 +46,8 @@ public class CollisionHelper {
                         newEnd.y = collider.getPosition().y;
                     }
                 }
+            } else {
+                gameObject.hitObject(null);
             }
         }
 
