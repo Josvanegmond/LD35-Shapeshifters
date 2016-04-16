@@ -1,24 +1,30 @@
 package nl.joozey.shapeshifter.level;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import nl.joozey.shapeshifter.gameobject.GameObject;
 import nl.joozey.shapeshifter.gameobject.Jeff;
+import nl.joozey.shapeshifter.util.ConditionTimer;
 import nl.joozey.shapeshifter.util.CountTimer;
+import nl.joozey.shapeshifter.util.InputManager;
 
 /**
  * Created by mint on 16-4-16.
  */
-public class Level1 extends Level {
+public class Level1 extends Level implements InputProcessor {
 
     private boolean _levelStarted;
     private float _skyRectHeight;
     private Jeff _jeff;
 
     public Level1() {
+
+        InputManager.getInstance().addProcessor(this);
 
         //floor
         _levelManager.createWall(this, 0, 0, Gdx.graphics.getWidth(), _floorLevel);
@@ -38,7 +44,29 @@ public class Level1 extends Level {
         _jeff = _levelManager.createJeff(Level1.this, 100, 480);
         _jeff.freeze();
 
-        _startLevelAnimation();
+        _startLevel();
+    }
+
+    private void _startLevel() {
+        setMessage("Press space to begin!");
+
+        System.out.println("START");
+        new ConditionTimer(new ConditionTimer.Task() {
+            @Override
+            public void run() {
+                System.out.println("RUN");}
+
+            @Override
+            public boolean check() {
+                System.out.println("CHECK " + _levelStarted);
+                return !_levelStarted;
+            }
+
+            @Override
+            public void finished() {
+                _startLevelAnimation();
+            }
+        }, 0.001f).begin();
     }
 
     private void _startLevelAnimation() {
@@ -52,7 +80,6 @@ public class Level1 extends Level {
 
             @Override
             public void finish() {
-                _levelStarted = true;
                 _jeff.freeze(false);
             }
         }, 2000, 0, 0.001f)
@@ -71,5 +98,49 @@ public class Level1 extends Level {
         }
 
         _shapeRenderer.begin();
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        if(keycode == Input.Keys.SPACE) {
+            System.out.println("LEVEL STARTED");
+            _levelStarted = true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 }

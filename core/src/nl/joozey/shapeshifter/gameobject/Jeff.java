@@ -29,6 +29,8 @@ public class Jeff extends GameObject implements InputProcessor {
     private float _gravity = 400;
     private float _angle;
     private boolean _hitFloor;
+    private boolean _jumpPressed;
+    private boolean _actionPressed;
 
     private int _shape;
     private Color _color;
@@ -116,6 +118,20 @@ public class Jeff extends GameObject implements InputProcessor {
             System.out.println(dimension.x + ", " + dimension.y + ", " + dimension.width + ", " + dimension.height);
         }
 
+        if (_jumpPressed && _hitFloor) {
+            _jumpForceModifier = _jumpForce;
+        }
+
+        if(_actionPressed) {
+            if (_shape == 0) {
+                synchronized (_barrelRollTask) {
+                    if (!_barrelRollTask.isScheduled()) {
+                        _barrelRollTimer.scheduleTask(_barrelRollTask, 0, 0.001f, 360);
+                    }
+                }
+            }
+        }
+
         dimension = CollisionHelper.check(this, dimension);
         if (dimension.y == this.getPosition().y) {
             if (_jumpForceModifier > 0 && !_hitFloor) {
@@ -167,15 +183,13 @@ public class Jeff extends GameObject implements InputProcessor {
         }
 
         if (keycode == Input.Keys.SPACE) {
-            if (_hitFloor) {
-                _jumpForceModifier = _jumpForce;
-            } else if (_shape == 0) {
-                synchronized (_barrelRollTask) {
-                    if (!_barrelRollTask.isScheduled()) {
-                        _barrelRollTimer.scheduleTask(_barrelRollTask, 0, 0.001f, 360);
-                    }
-                }
-            }
+            _jumpPressed = true;
+        }
+
+        if(keycode == Input.Keys.ENTER || keycode == Input.Keys.E || keycode == Input.Keys.F ||
+                keycode == Input.Keys.SHIFT_RIGHT || keycode == Input.Keys.SHIFT_LEFT ||
+                keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) {
+            _actionPressed = true;
         }
 
         if (keycode == Input.Keys.E || keycode == Input.Keys.ENTER) {
@@ -213,6 +227,16 @@ public class Jeff extends GameObject implements InputProcessor {
 
         if (keycode == Input.Keys.A || keycode == Input.Keys.LEFT) {
             _moveLeft = false;
+        }
+
+        if (keycode == Input.Keys.SPACE) {
+            _jumpPressed = false;
+        }
+
+        if(keycode == Input.Keys.ENTER || keycode == Input.Keys.E || keycode == Input.Keys.F ||
+                keycode == Input.Keys.SHIFT_RIGHT || keycode == Input.Keys.SHIFT_LEFT ||
+                keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) {
+            _actionPressed = false;
         }
 
         return false;
