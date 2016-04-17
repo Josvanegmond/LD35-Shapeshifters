@@ -80,7 +80,7 @@ public class Level5 extends Level {
             _jeff.setPower(2);
             _jeff.rainbow(300);
             setMessage("That felt ecstatic! You feel like TAB is more useful!");
-            _levelManager.createDialog(this, 170, _floorLevel, 100, 60, "Maybe you can climb upwards with your new power?", false);
+            _levelManager.createDialog(this, 170, _floorLevel, 100, 60, "You can climb walls! Combine your new power and shapes.", false);
         }
     }
 }

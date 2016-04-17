@@ -29,7 +29,8 @@ public class Level implements InputProcessor {
 
     protected float _floorLevel = 70;
 
-    public Level() {}
+    public Level() {
+    }
 
     public void load(int dir) {
         InputManager.getInstance().addProcessor(this);
@@ -37,6 +38,17 @@ public class Level implements InputProcessor {
         _shapeRenderer.setAutoShapeType(true);
 
         _levelManager = LevelManager.getInstance();
+
+        _levelManager.createWall(this, 0, 620, 800, 100);
+
+        Jeff jeff = _levelManager.getJeff();
+
+        if (jeff != null && jeff.getPower() > 2) {
+            for (int i = 0; i < (1f-_levelManager.getDimFactor()) * 6; i++) {
+                _levelManager.createCorrupt(this, (float)Math.random() * 500 + 150, (float)Math.random() * 600,
+                        50 * ((float)Math.random() * 2 + 1), 50 * ((float)Math.random() * 2 + 1));
+            }
+        }
     }
 
     public void unload() {
@@ -83,7 +95,7 @@ public class Level implements InputProcessor {
         //powerups
         List<String> unlockedPowerupList = _levelManager.getPowerupHints();
         Jeff jeff = _levelManager.getJeff();
-        if(jeff != null) {
+        if (jeff != null) {
             int unlockedPowerupCount = jeff.getPower();
             if (_showPowerups && unlockedPowerupCount > 0) {
                 _shapeRenderer.rect(60, 60, 680, 480);
@@ -101,12 +113,12 @@ public class Level implements InputProcessor {
         batch.begin();
 
         Constants.font.setColor(Color.WHITE);
-        if(!Objects.equals(_message, "")) {
+        if (!Objects.equals(_message, "")) {
             Constants.font.draw(batch, _message, 60, 38);
         }
 
         //powerups
-        if(jeff != null) {
+        if (jeff != null) {
             int unlockedPowerupCount = jeff.getPower();
             if (_showPowerups && unlockedPowerupCount > 0) {
                 for (int i = 0; i < unlockedPowerupCount; i++) {
@@ -120,9 +132,13 @@ public class Level implements InputProcessor {
         _message = message;
     }
 
-    public Level getLeft() { return null; }
+    public Level getLeft() {
+        return null;
+    }
 
-    public Level getRight() { return null; }
+    public Level getRight() {
+        return null;
+    }
 
     public void onTouched(GameObject gameObject) {
 
@@ -138,7 +154,7 @@ public class Level implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if(keycode == Input.Keys.TAB) {
+        if (keycode == Input.Keys.TAB) {
             _showPowerups = true;
         }
         return false;
@@ -146,7 +162,7 @@ public class Level implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        if(keycode == Input.Keys.TAB) {
+        if (keycode == Input.Keys.TAB) {
             _showPowerups = false;
         }
         return false;

@@ -44,6 +44,9 @@ public class Level6 extends Level {
         _levelManager.createWall(this, 650, _floorLevel + 250, 150, 20, true);
 
         _levelManager.createWall(this, 450, 300, 50, 150, true);
+
+        _levelManager.createDialog(this, 80, _floorLevel + 150, 150, 100, "Nasty flies. Maybe you can kick them away?", false);
+        _levelManager.createCorrupt(this, 450, _floorLevel + 200, 100, 100);
     }
 
     @Override
@@ -72,7 +75,7 @@ public class Level6 extends Level {
         if(gameObject instanceof FairyBlimp) {
             _jeff.setPower(3);
             _jeff.rainbow(200);
-            setMessage("You feel super-empowered!");
+            setMessage("You feel super-empowered! Don't forget TAB!");
         }
     }
 }

@@ -34,11 +34,13 @@ public class CountTimer extends Timer {
             }
         };
 
-        super.scheduleTask(_timerTask, delaySeconds, intervalSeconds, (int)intervals);
+        super.scheduleTask(_timerTask, delaySeconds, intervalSeconds, (int) intervals);
     }
 
     public boolean isBusy() {
-        return _timerTask.isScheduled();
+        synchronized (_timerTask) {
+            return _timerTask.isScheduled();
+        }
     }
 
     public interface Task {

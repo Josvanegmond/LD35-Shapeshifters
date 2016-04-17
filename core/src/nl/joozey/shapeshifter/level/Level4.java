@@ -138,6 +138,10 @@ public class Level4 extends Level implements GameObjectObserver {
         _levelManager.createWall(this, 100, 360, 350, 10);
         _levelManager.createWall(this, 150, 390, 300, 100);
 
+        if(_jeff.getPower() > 0) {
+            _reshaped = true;
+        }
+
         if (_reshaped) {
             _loadStage2Level();
         } else {
@@ -172,7 +176,7 @@ public class Level4 extends Level implements GameObjectObserver {
 
     private void _loadStage2Level() {
         _levelManager.createDialog(this, 250, _floorLevel + 120, 150, 200, "... Jeff ...", true);
-        _levelManager.createDialog(this, 650, _floorLevel + 100, 60, 80, "What have you done?", true);
+        _levelManager.createDialog(this, 650, _floorLevel + 100, 60, 120, "What have you done?", true);
         _levelManager.createDialog(this, 150, 490, 300, 100, "You ...  you killed it ... ", true);
     }
 }

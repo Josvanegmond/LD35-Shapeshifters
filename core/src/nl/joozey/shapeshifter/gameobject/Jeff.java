@@ -27,17 +27,19 @@ public class Jeff extends GameObject implements InputProcessor {
 
     private boolean _moveRight;
     private boolean _moveLeft;
+    private boolean _moveUp;
+    private boolean _moveDown;
     private float _speed = 180f;
+    private float _speedMultiplier = 1f;
     private float _jumpForceModifier = 0f;
     private float _jumpForce = 1000f;
-    private float _jumpMultiplier = 1f;
     private float _gravity = 400;
     private float _angle;
     private boolean _hitFloor;
     private boolean _jumpPressed;
     private boolean _actionPressed;
     private boolean _actionActivated;
-    private int _powerLevel = 3;
+    private int _powerLevel = 6;
 
     private int _shape;
     private int _previousShape;
@@ -72,7 +74,7 @@ public class Jeff extends GameObject implements InputProcessor {
         };
 
         if(_powerLevel >= 5) {
-            _jumpMultiplier = 2f;
+            _speedMultiplier = 2f;
         }
     }
 
@@ -81,6 +83,12 @@ public class Jeff extends GameObject implements InputProcessor {
     }
 
     private void _morph(int startShape, int endShape) {
+
+        //final level, lock in superpower shape
+        if(_powerLevel == 7) {
+            endShape = 4;
+        }
+
         switch (endShape) {
             case 0:
                 setPosition(getPosition().add(getSize().x * .5f - 15, 0));
@@ -110,7 +118,7 @@ public class Jeff extends GameObject implements InputProcessor {
                 setPosition(getPosition().add(getSize().x * .5f - 20, 0));
                 setSize(60, 60);
                 _color = new Color(Constants.JEFF_COLOR).add(.05f, -0.2f, -.48f, 1f);
-                _jumpForce = 700f;
+                _jumpForce = 0f;
                 break;
         }
     }
@@ -130,25 +138,35 @@ public class Jeff extends GameObject implements InputProcessor {
         float factor = Gdx.graphics.getDeltaTime();
         Rectangle dimension = getDimension();
 
-        dimension.y += _jumpForceModifier * factor;
-        _jumpForceModifier = Math.max(0, _jumpForceModifier - 700 * factor);
+        if(_shape != 4) {
+            dimension.y += _jumpForceModifier * factor;
+            _jumpForceModifier = Math.max(0, _jumpForceModifier - 700 * factor);
 
-        dimension.y -= _gravity * factor;
+            dimension.y -= _gravity * factor;
+        }
 
         if (_moveLeft) {
-            dimension.x -= _speed * factor;
+            dimension.x -= _speed * _speedMultiplier * factor;
         }
 
         if (_moveRight) {
-            dimension.x += _speed * factor;
+            dimension.x += _speed * _speedMultiplier * factor;
         }
 
-        if (_moveLeft || _moveRight) {
-            System.out.println(dimension.x + ", " + dimension.y + ", " + dimension.width + ", " + dimension.height);
+        if(_shape == 4) {
+            if (_moveUp) {
+                dimension.y += _speed * _speedMultiplier * factor;
+            }
+
+            if (_moveDown) {
+                dimension.y -= _speed * _speedMultiplier * factor;
+            }
         }
 
-        if (_jumpPressed && _hitFloor) {
-            _jumpForceModifier = _jumpForce * _jumpMultiplier;
+        if(_shape != 4) {
+            if (_jumpPressed && _hitFloor) {
+                _jumpForceModifier = _jumpForce;
+            }
         }
 
         dimension = CollisionHelper.check(this, dimension);
@@ -214,7 +232,7 @@ public class Jeff extends GameObject implements InputProcessor {
     }
 
     public void redbow(float duration) {
-        CountTimer rainbowTimer = new CountTimer(new CountTimer.Task() {
+        CountTimer redbowTimer = new CountTimer(new CountTimer.Task() {
             @Override
             public void count(float amount) {
                 HSL hsl = new HSL(Constants.RINN_COLOR);
@@ -234,7 +252,7 @@ public class Jeff extends GameObject implements InputProcessor {
         _powerLevel = power;
 
         if(_powerLevel >= 5) {
-            _jumpMultiplier = 1.2f;
+            _speedMultiplier = 2f;
         }
     }
 
@@ -279,6 +297,14 @@ public class Jeff extends GameObject implements InputProcessor {
             _moveLeft = true;
         }
 
+        if (keycode == Input.Keys.W || keycode == Input.Keys.UP) {
+            _moveUp = true;
+        }
+
+        if (keycode == Input.Keys.S || keycode == Input.Keys.DOWN) {
+            _moveDown = true;
+        }
+
         if (keycode == Input.Keys.SPACE) {
             _jumpPressed = true;
         }
@@ -304,7 +330,7 @@ public class Jeff extends GameObject implements InputProcessor {
             setShape(3);
         }
 
-        if (_powerLevel >= 5 && keycode == Input.Keys.NUM_5) {
+        if (_powerLevel >= 6 && keycode == Input.Keys.NUM_5) {
             setShape(4);
         }
 
@@ -320,6 +346,14 @@ public class Jeff extends GameObject implements InputProcessor {
 
         if (keycode == Input.Keys.A || keycode == Input.Keys.LEFT) {
             _moveLeft = false;
+        }
+
+        if (keycode == Input.Keys.W || keycode == Input.Keys.UP) {
+            _moveUp = false;
+        }
+
+        if (keycode == Input.Keys.S || keycode == Input.Keys.DOWN) {
+            _moveDown = false;
         }
 
         if (keycode == Input.Keys.SPACE) {
@@ -372,5 +406,21 @@ public class Jeff extends GameObject implements InputProcessor {
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+
+    public int getShape() {
+        return _shape;
+    }
+
+    public boolean isActionActive() {
+        return _actionActivated;
+    }
+
+    public void paralyze() {
+        _jumpForce = 0;
+        _actionActivated = false;
+        _jumpPressed = false;
+        _moveRight = false;
+        _moveLeft = false;
     }
 }

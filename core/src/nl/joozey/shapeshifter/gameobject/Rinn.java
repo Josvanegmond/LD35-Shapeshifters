@@ -28,7 +28,7 @@ public class Rinn extends GameObject {
     private boolean _hitFloor;
     private boolean _jumpPressed;
     private boolean _actionPressed;
-    private int _rinnStage = 4;
+    private int _rinnStage = 0;
 
     private Level _level;
 

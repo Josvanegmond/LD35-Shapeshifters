@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.joozey.shapeshifter.gameobject.CorruptObject;
 import nl.joozey.shapeshifter.gameobject.DialogObject;
 import nl.joozey.shapeshifter.gameobject.FairyBlimp;
 import nl.joozey.shapeshifter.gameobject.GameObject;
@@ -18,7 +19,7 @@ import nl.joozey.shapeshifter.util.CountTimer;
  */
 public class LevelManager {
 
-    private static final float TOTAL_BLIMPS = 10;
+    private static final float TOTAL_BLIMPS = 7;
 
     private static LevelManager _instance;
 
@@ -34,6 +35,7 @@ public class LevelManager {
 
     private List<FairyBlimp> _blimpList;
     private List<WallObject> _wallList;
+    private List<CorruptObject> _corruptList;
     private List<GameObject> _characterList;
     private List<DialogObject> _dialogList;
 
@@ -76,12 +78,13 @@ public class LevelManager {
         _unlockedPowerupHints.add("Press E, F, SHIFT or ENTER to unlock your shape power!");
         _unlockedPowerupHints.add("Press THREE to square-smash!");
         _unlockedPowerupHints.add("Press FOUR to bounce to new heights!");
-        _unlockedPowerupHints.add("Your jumping ablities have doubled!");
+        _unlockedPowerupHints.add("Your speed has doubled!");
 
         _blimpList = new ArrayList<FairyBlimp>();
         _wallList = new ArrayList<WallObject>();
         _characterList = new ArrayList<GameObject>();
         _dialogList = new ArrayList<DialogObject>();
+        _corruptList = new ArrayList<CorruptObject>();
     }
 
     public void clearDialogs() {
@@ -94,6 +97,7 @@ public class LevelManager {
         list.addAll(_wallList);
         list.addAll(_characterList);
         list.addAll(_dialogList);
+        list.addAll(_corruptList);
         return list;
     }
 
@@ -105,6 +109,12 @@ public class LevelManager {
 
     public GameObject createWall(Level level, float x, float y, float w, float h) {
         return createWall(level, x, y, w, h, false);
+    }
+
+    public GameObject createCorrupt(Level level, float x, float y, float w, float h) {
+        CorruptObject corrupt =  new CorruptObject(x, y, w, h);
+        _corruptList.add(corrupt);
+        return corrupt;
     }
 
     public GameObject createWall(Level level, float x, float y, float w, float h, boolean breakable) {
@@ -170,6 +180,7 @@ public class LevelManager {
         _blimpList.clear();
         _characterList.clear();
         _wallList.clear();
+        _corruptList.clear();
     }
 
     public void loadLevel(Level level, int dir) {

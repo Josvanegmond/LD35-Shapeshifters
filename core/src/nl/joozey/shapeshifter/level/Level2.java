@@ -27,6 +27,11 @@ public class Level2 extends Level implements GameObjectObserver {
     public Level2() {
     }
 
+    @Override
+    public void unload() {
+        _jeff.clearObservers();
+    }
+
     public void load(int dir) {
         super.load(dir);
 
@@ -60,6 +65,7 @@ public class Level2 extends Level implements GameObjectObserver {
         if(rinn != null && rinn.getStage() == 4) {
             _rinn = _levelManager.createRinn(Level2.this, 200, _floorLevel + 240);
             _levelManager.createDialog(this, 0, _floorLevel, 100, 100, "Jeff ... please stop ... please ...", true);
+            _rinn.stopMoving();
         }
     }
 
@@ -129,7 +135,7 @@ public class Level2 extends Level implements GameObjectObserver {
 
     @Override
     public void onChangeDimension(GameObject gameObject, Rectangle dimension) {
-        if(_jeff != null && gameObject == _jeff) {
+        if(_rinn != null && _jeff != null && gameObject == _jeff) {
             if(_rinn.getStage() == 4 && dimension.y > _floorLevel + 200) {
                 _rinn.morph(1);
                 _rinn.setStage(5);
