@@ -31,13 +31,8 @@ public class WallObject extends GameObject {
         Vector2 pos = getPosition();
         Vector2 size = getSize();
 
-        float takenBlimps = LevelManager.getInstance().getTakenBlimpCount();
-        float totalBlimps = LevelManager.getInstance().getBlimpCount();
-
-        if(totalBlimps > 0) {
-            _color.s = 1f - takenBlimps / totalBlimps;
-            _color.l = 0.6f - (takenBlimps / totalBlimps) * .4f;
-        }
+        _color.s = LevelManager.getInstance().getDimFactor();
+        _color.l = 0.6f - (1f - LevelManager.getInstance().getDimFactor()) * .4f;
 
         _shapeRenderer.setColor(_color.toRGB());
         _shapeRenderer.begin();

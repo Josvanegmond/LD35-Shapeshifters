@@ -24,11 +24,11 @@ public class CollisionHelper {
 
             if (gameObject.getDimension().overlaps(end) || end.overlaps(gameObject.getDimension())) {
 
+                gameObject.hitObject(collider);
                 if(gameObject.isGrabbableBy(collider)) {
                     collider.hitObject(gameObject);
 
                 } else {
-                    gameObject.hitObject(collider);
                     Rectangle rect = gameObject.getDimension();
                     Rectangle colliderRect = collider.getDimension();
 
@@ -47,7 +47,7 @@ public class CollisionHelper {
                     }
                 }
             } else {
-                gameObject.hitObject(null);
+                gameObject.unhitObject(collider);
             }
         }
 

@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import java.util.Objects;
+
 import nl.joozey.shapeshifter.gameobject.GameObject;
 
 /**
@@ -24,8 +26,9 @@ public class Level {
 
     protected float _floorLevel = 70;
 
-    public Level() {
+    public Level() {}
 
+    public void load(int dir) {
         _font = new BitmapFont(Gdx.files.internal("forced_square.fnt"), Gdx.files.internal("forced_square.png"), false);
         _font.setColor(Color.WHITE);
         _shapeRenderer = new ShapeRenderer();
@@ -50,13 +53,7 @@ public class Level {
     public final void draw(Batch batch) {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 
-        float takenBlimps = LevelManager.getInstance().getTakenBlimpCount();
-        float totalBlimps = LevelManager.getInstance().getBlimpCount();
-
-        float alpha = 1;
-        if (totalBlimps > 0) {
-            alpha = 1f - takenBlimps / totalBlimps;
-        }
+        float alpha = LevelManager.getInstance().getDimFactor();
 
         batch.setColor(1f, 1f, 1f, 1f);
         batch.draw(_grayBackground, 0, 0);
@@ -81,12 +78,20 @@ public class Level {
         batch.end();
         batch.begin();
 
-        if(_message != "") {
+        if(!Objects.equals(_message, "")) {
             _font.draw(batch, _message, 60, 38);
         }
     }
 
     public void setMessage(String message) {
         _message = message;
+    }
+
+    public Level getLeft() { return null; }
+
+    public Level getRight() { return null; }
+
+    public void onTouched(GameObject gameObject) {
+
     }
 }

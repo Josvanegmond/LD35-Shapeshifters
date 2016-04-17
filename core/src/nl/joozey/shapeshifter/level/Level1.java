@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import nl.joozey.shapeshifter.gameobject.GameObject;
 import nl.joozey.shapeshifter.gameobject.Jeff;
-import nl.joozey.shapeshifter.util.ConditionTimer;
 import nl.joozey.shapeshifter.util.CountTimer;
 import nl.joozey.shapeshifter.util.InputManager;
 
@@ -23,7 +22,10 @@ public class Level1 extends Level implements InputProcessor {
     private Jeff _jeff;
 
     public Level1() {
+    }
 
+    public void load(int dir) {
+        super.load(dir);
         InputManager.getInstance().addProcessor(this);
 
         //floor
@@ -34,42 +36,34 @@ public class Level1 extends Level implements InputProcessor {
 
         //obstacles
         _levelManager.createWall(this, 0, _floorLevel, 20, 320);
-        _levelManager.createWall(this, 20, _floorLevel, 80, 80);
+        _levelManager.createWall(this, 20, _floorLevel, 60, 80);
         _levelManager.createWall(this, 350, _floorLevel, 80, 80);
         _levelManager.createWall(this, 500, _floorLevel, 80, 160);
 
-        _levelManager.createDialog(this, 323, 66, 30, 60, "You hear a voice shouting: USE SPACE TO JUMP!", false);
+        _levelManager.createDialog(this, 100, _floorLevel, 30, 60, "You hear a voice shouting: HEY! COME HERE!", true);
+        _levelManager.createDialog(this, 323, 66, 30, 60, "USE SPACE TO JUMP!", false);
 
         //player
-        _jeff = _levelManager.createJeff(Level1.this, 100, 480);
-        _jeff.freeze();
+        if(dir == -1) {
+            _jeff = _levelManager.createJeff(Level1.this, 115, 480);
+        } else if(dir == 0) {
+            _jeff = _levelManager.createJeff(Level1.this, 20, _floorLevel);
+        } else {
+            _jeff = _levelManager.createJeff(Level1.this, 720, _floorLevel);
+        }
 
-        _startLevel();
+        if(!_levelStarted) {
+            _jeff.freeze();
+            _startLevel();
+        }
     }
 
     private void _startLevel() {
         setMessage("Press space to begin!");
-
-        System.out.println("START");
-        new ConditionTimer(new ConditionTimer.Task() {
-            @Override
-            public void run() {
-                System.out.println("RUN");}
-
-            @Override
-            public boolean check() {
-                System.out.println("CHECK " + _levelStarted);
-                return !_levelStarted;
-            }
-
-            @Override
-            public void finished() {
-                _startLevelAnimation();
-            }
-        }, 0.001f).begin();
     }
 
     private void _startLevelAnimation() {
+        setMessage("");
         new CountTimer(new CountTimer.Task() {
             @Override
             public void count(float amount) {
@@ -84,6 +78,11 @@ public class Level1 extends Level implements InputProcessor {
             }
         }, 2000, 0, 0.001f)
                 .start();
+    }
+
+    @Override
+    public Level getRight() {
+        return LevelManager.getInstance().level2;
     }
 
     @Override
@@ -107,9 +106,9 @@ public class Level1 extends Level implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        if(keycode == Input.Keys.SPACE) {
-            System.out.println("LEVEL STARTED");
+        if (!_levelStarted && keycode == Input.Keys.SPACE) {
             _levelStarted = true;
+            _startLevelAnimation();
         }
         return false;
     }

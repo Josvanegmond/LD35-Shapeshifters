@@ -11,6 +11,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Timer;
 
 import nl.joozey.shapeshifter.helper.CollisionHelper;
+import nl.joozey.shapeshifter.level.Level;
+import nl.joozey.shapeshifter.level.LevelManager;
 import nl.joozey.shapeshifter.main.Constants;
 import nl.joozey.shapeshifter.util.InputManager;
 
@@ -23,7 +25,7 @@ public class Jeff extends GameObject implements InputProcessor {
 
     private boolean _moveRight;
     private boolean _moveLeft;
-    private float _speed = 200f;
+    private float _speed = 180f;
     private float _jumpForceModifier = 0f;
     private float _jumpForce = 1000f;
     private float _gravity = 400;
@@ -38,7 +40,10 @@ public class Jeff extends GameObject implements InputProcessor {
     private Timer _barrelRollTimer;
     private Timer.Task _barrelRollTask;
 
-    public Jeff(float x, float y) {
+    private Level _level;
+
+    public Jeff(Level level, float x, float y) {
+        _level = level;
         _shapeRenderer = new ShapeRenderer();
         _shapeRenderer.setAutoShapeType(true);
 
@@ -46,7 +51,7 @@ public class Jeff extends GameObject implements InputProcessor {
         InputManager.getInstance().addProcessor(this);
 
         setPosition(x, y);
-        _setShape(0);
+        setShape(0);
         _color = new Color(Constants.JEFF_COLOR);
 
         _barrelRollTimer = new Timer();
@@ -61,39 +66,52 @@ public class Jeff extends GameObject implements InputProcessor {
         };
     }
 
+    public void setColor(Color color) {
+        _color = color;
+    }
+
     private void _morph(int startShape, int endShape) {
         switch (endShape) {
             case 0:
+                setPosition(getPosition().add(getSize().x * .5f - 15, 0));
                 setSize(30, 60);
                 _color = new Color(Constants.JEFF_COLOR);
                 _jumpForce = 800f;
                 break;
             case 1:
+                setPosition(getPosition().add(getSize().x * .5f - 75, 0));
                 setSize(150, 10);
                 _color = new Color(Constants.JEFF_COLOR).add(0.2f, 0.2f, 0.2f, 1f);
                 _jumpForce = 700f;
                 break;
             case 2:
+                setPosition(getPosition().add(getSize().x * .5f - 40, 0));
                 setSize(80, 80);
                 _color = new Color(Constants.JEFF_COLOR).add(0.4f, 0.3f, 0.2f, 1f);
                 _jumpForce = 500f;
                 break;
             case 3:
-                setSize(15, 15);
+                setPosition(getPosition().add(getSize().x * .5f - 7.5f, 0));
+                setSize(30, 30);
                 _color = new Color(Constants.JEFF_COLOR).add(.25f, 0.1f, -0.1f, 1f);
                 _jumpForce = 1100f;
                 break;
             case 4:
-                setSize(40, 40);
+                setPosition(getPosition().add(getSize().x * .5f - 20, 0));
+                setSize(60, 60);
                 _color = new Color(Constants.JEFF_COLOR).add(.05f, -0.2f, -.48f, 1f);
                 _jumpForce = 700f;
                 break;
         }
     }
 
-    private void _setShape(int shape) {
+    public void setShape(int shape) {
         _morph(_shape, shape);
         _shape = shape;
+    }
+
+    public void setLevel(Level level) {
+        _level = level;
     }
 
     @Override
@@ -143,6 +161,14 @@ public class Jeff extends GameObject implements InputProcessor {
         }
 
         setPosition(dimension.x, dimension.y);
+
+        if(dimension.x + dimension.width * .5f < 0) {
+            LevelManager.getInstance().loadLeft();
+        }
+
+        if(dimension.x + dimension.width * .5f > Gdx.graphics.getWidth()) {
+            LevelManager.getInstance().loadRight();
+        }
     }
 
     @Override
@@ -159,7 +185,7 @@ public class Jeff extends GameObject implements InputProcessor {
         }
 
         if (_shape >= 3) {
-            _shapeRenderer.circle(pos.x + size.x * .5f, pos.y + size.x * .5f, size.x);
+            _shapeRenderer.circle(pos.x + size.x * .5f, pos.y + size.y * .5f, size.x * .5f);
         }
 
         _shapeRenderer.end();
@@ -187,8 +213,7 @@ public class Jeff extends GameObject implements InputProcessor {
         }
 
         if(keycode == Input.Keys.ENTER || keycode == Input.Keys.E || keycode == Input.Keys.F ||
-                keycode == Input.Keys.SHIFT_RIGHT || keycode == Input.Keys.SHIFT_LEFT ||
-                keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) {
+                keycode == Input.Keys.SHIFT_RIGHT || keycode == Input.Keys.SHIFT_LEFT) {
             _actionPressed = true;
         }
 
@@ -196,23 +221,23 @@ public class Jeff extends GameObject implements InputProcessor {
         }
 
         if (keycode == Input.Keys.NUM_1) {
-            _setShape(0);
+            setShape(0);
         }
 
         if (keycode == Input.Keys.NUM_2) {
-            _setShape(1);
+            setShape(1);
         }
 
         if (keycode == Input.Keys.NUM_3) {
-            _setShape(2);
+            setShape(2);
         }
 
         if (keycode == Input.Keys.NUM_4) {
-            _setShape(3);
+            setShape(3);
         }
 
         if (keycode == Input.Keys.NUM_5) {
-            _setShape(4);
+            setShape(4);
         }
 
         return false;

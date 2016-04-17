@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
+import nl.joozey.shapeshifter.level.Level;
+import nl.joozey.shapeshifter.level.LevelManager;
+
 /**
  * Created by mint on 16-4-16.
  */
@@ -16,10 +19,12 @@ public class FairyBlimp extends GameObject {
     private float _angle;
     private float _radius;
     private float _speed;
+    private Level _level;
 
     private boolean _grabbed;
 
-    public FairyBlimp(float x, float y) {
+    public FairyBlimp(Level level, float x, float y) {
+        _level = level;
         _shapeRenderer = new ShapeRenderer();
         _shapeRenderer.setAutoShapeType(true);
 
@@ -63,9 +68,6 @@ public class FairyBlimp extends GameObject {
     @Override
     public boolean isGrabbableBy(GameObject gameObject) {
         if (!_grabbed && gameObject instanceof Jeff) {
-            _grabbed = true;
-            setPosition(-100, 0);
-            setSize(0, 0);
             return true;
         }
         return false;
@@ -73,10 +75,14 @@ public class FairyBlimp extends GameObject {
 
     @Override
     public void hitObject(GameObject gameObject) {
-        if (!_grabbed && gameObject instanceof Jeff) {
-            _grabbed = true;
-            setPosition(-100, 0);
-            setSize(0, 0);
+        if (gameObject instanceof Jeff) {
+            _level.onTouched(this);
+            if (!_grabbed) {
+                _grabbed = true;
+                LevelManager.getInstance().dim();
+                setPosition(-100, 0);
+                setSize(0, 0);
+            }
         }
     }
 

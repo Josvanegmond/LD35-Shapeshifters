@@ -24,33 +24,37 @@ public class DialogObject extends GameObject {
     }
 
     @Override
-    public void draw(Batch batch) {}
+    public void draw(Batch batch) {
+    }
 
     @Override
-    public void act() {}
+    public void act() {
+    }
 
     @Override
     public void hitObject(GameObject gameObject) {
-        if(gameObject == null && _activated) {
+        if (gameObject instanceof Jeff) {
+            if (!_consumed) {
+                _activated = true;
+                _level.setMessage(_message);
+                if (_consumable) {
+                    _consumed = true;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void unhitObject(GameObject gameObject) {
+        if (gameObject instanceof Jeff && _activated) {
             _activated = false;
             _level.setMessage("");
+
         }
     }
 
     @Override
     public boolean isGrabbableBy(GameObject gameObject) {
-        if(!_consumed && gameObject instanceof Jeff) {
-            _activated = true;
-            _level.setMessage(_message);
-            if(_consumable) {
-                _consumed = true;
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isGrabbed() {
-        return _consumed;
+        return true;
     }
 }
