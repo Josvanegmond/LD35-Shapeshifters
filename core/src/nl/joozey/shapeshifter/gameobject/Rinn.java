@@ -28,7 +28,7 @@ public class Rinn extends GameObject {
     private boolean _hitFloor;
     private boolean _jumpPressed;
     private boolean _actionPressed;
-    private int _rinnStage = 0;
+    private int _rinnStage = 4;
 
     private Level _level;
 
@@ -39,22 +39,46 @@ public class Rinn extends GameObject {
         _level = level;
         _shapeRenderer = new ShapeRenderer();
         _shapeRenderer.setAutoShapeType(true);
-        setPosition(x, y);
-        setSize(40, 40);
         _color = Constants.RINN_COLOR;
+        setPosition(x, y);
+        morph(0);
+    }
+
+    public void morph(int shape) {
+        _shape = shape;
+        switch (shape) {
+            case 0:
+                setPosition(getPosition().add(getSize().x * .5f - getSize().x * .25f, 0));
+                setSize(40, 40);
+                break;
+
+            case 1:
+                setPosition(getPosition().add(getSize().x * .5f - 75, 0));
+                setSize(150, 10);
+                break;
+        }
     }
 
     @Override
     public void draw(Batch batch) {
+        if (_rinnStage < 7) {
+            Vector2 pos = getPosition();
+            Vector2 size = getSize();
 
-        Vector2 pos = getPosition();
-        Vector2 size = getSize();
+            _shapeRenderer.setColor(_color);
+            _shapeRenderer.begin();
 
-        _shapeRenderer.setColor(_color);
-        _shapeRenderer.begin();
-        _shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
-        _shapeRenderer.circle(pos.x + size.x * .5f, pos.y + size.y * .5f, size.x * .5f);
-        _shapeRenderer.end();
+            _shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
+            if (_shape == 0) {
+                _shapeRenderer.circle(pos.x + size.x * .5f, pos.y + size.y * .5f, size.x * .5f);
+            }
+
+            if (_shape == 1) {
+                _shapeRenderer.rect(pos.x, pos.y, size.x * .5f, size.y * .5f, size.x, size.y, 1, 1, _angle);
+            }
+
+            _shapeRenderer.end();
+        }
     }
 
     @Override
@@ -103,7 +127,7 @@ public class Rinn extends GameObject {
 
     @Override
     public boolean isGrabbableBy(GameObject gameObject) {
-        if(gameObject instanceof Jeff) {
+        if (gameObject instanceof Jeff) {
             return true;
         }
 
@@ -112,7 +136,7 @@ public class Rinn extends GameObject {
 
     @Override
     public void hitObject(GameObject gameObject) {
-        if(gameObject instanceof Jeff) {
+        if (gameObject instanceof Jeff) {
             _level.onTouched(this);
         }
     }
@@ -121,7 +145,7 @@ public class Rinn extends GameObject {
         _level = level;
     }
 
-    public void moveLeft(){
+    public void moveLeft() {
         _moveLeft = true;
         _moveRight = false;
     }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Timer;
 public class CountTimer extends Timer {
 
     private Task _task;
+    private Timer.Task _timerTask;
 
     public CountTimer(Task task, float intervals) {
         this(task, intervals, 0);
@@ -17,9 +18,9 @@ public class CountTimer extends Timer {
         this(task, intervals, delaySeconds, 0.01f);
     }
 
-    public CountTimer(Task task, final float intervals, int delaySeconds, float intervalSeconds) {
+    public CountTimer(Task task, final float intervals, float delaySeconds, float intervalSeconds) {
         _task = task;
-        super.scheduleTask(new Timer.Task() {
+        _timerTask = new Timer.Task() {
             private float _count;
 
             @Override
@@ -31,7 +32,13 @@ public class CountTimer extends Timer {
                     _count = 0;
                 }
             }
-        }, delaySeconds, intervalSeconds, (int)intervals);
+        };
+
+        super.scheduleTask(_timerTask, delaySeconds, intervalSeconds, (int)intervals);
+    }
+
+    public boolean isBusy() {
+        return _timerTask.isScheduled();
     }
 
     public interface Task {

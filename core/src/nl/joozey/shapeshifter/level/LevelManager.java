@@ -11,6 +11,7 @@ import nl.joozey.shapeshifter.gameobject.GameObject;
 import nl.joozey.shapeshifter.gameobject.Jeff;
 import nl.joozey.shapeshifter.gameobject.Rinn;
 import nl.joozey.shapeshifter.gameobject.WallObject;
+import nl.joozey.shapeshifter.util.CountTimer;
 
 /**
  * Created by mint on 16-4-16.
@@ -26,6 +27,7 @@ public class LevelManager {
     public final Level level3 = new Level3();
     public final Level level4 = new Level4();
     public final Level level5 = new Level5();
+    public final Level level6 = new Level6();
 
     private Jeff _jeff;
     private Rinn _rinn;
@@ -35,11 +37,31 @@ public class LevelManager {
     private List<GameObject> _characterList;
     private List<DialogObject> _dialogList;
 
+    private float _shakeX;
+    private float _shakeY;
+
     private float _dimLevel = TOTAL_BLIMPS;
 
     private List<String> _unlockedPowerupHints;
 
     private Level _currentLevel;
+
+    private CountTimer _shakeTimer;
+    private CountTimer.Task _shakeTask = new CountTimer.Task() {
+        float shakePower = 10f;
+        @Override
+        public void count(float amount) {
+            float factor = 1f - amount;
+            _shakeX = (float)Math.random() * shakePower * factor - shakePower * factor * .5f;
+            _shakeY = (float)Math.random() * shakePower * factor - shakePower * factor * .5f;
+        }
+
+        @Override
+        public void finish() {
+            _shakeX = 0;
+            _shakeY = 0;
+        }
+    };
 
     public static LevelManager getInstance() {
         if (_instance == null) {
@@ -51,7 +73,10 @@ public class LevelManager {
     private LevelManager() {
         _unlockedPowerupHints = new ArrayList<String>();
         _unlockedPowerupHints.add("Pressing TAB gives you this clear overview of nothing!");
-        _unlockedPowerupHints.add("Press E, F, SHIFT or ENTER to unlock your shape power");
+        _unlockedPowerupHints.add("Press E, F, SHIFT or ENTER to unlock your shape power!");
+        _unlockedPowerupHints.add("Press THREE to square-smash!");
+        _unlockedPowerupHints.add("Press FOUR to bounce to new heights!");
+        _unlockedPowerupHints.add("Your jumping ablities have doubled!");
 
         _blimpList = new ArrayList<FairyBlimp>();
         _wallList = new ArrayList<WallObject>();
@@ -79,8 +104,15 @@ public class LevelManager {
     }
 
     public GameObject createWall(Level level, float x, float y, float w, float h) {
-        WallObject wall = new WallObject(x, y, w, h);
-        _wallList.add(wall);
+        return createWall(level, x, y, w, h, false);
+    }
+
+    public GameObject createWall(Level level, float x, float y, float w, float h, boolean breakable) {
+        WallObject wall = null;
+        if(!(breakable && level.isBroken())) {
+            wall = new WallObject(x, y, w, h, breakable);
+            _wallList.add(wall);
+        }
         return wall;
     }
 
@@ -129,6 +161,11 @@ public class LevelManager {
     }
 
     private void _clearLists() {
+
+        for(GameObject gameObject : getAllGameObjects()) {
+            gameObject.clearObservers();
+        }
+
         _dialogList.clear();
         _blimpList.clear();
         _characterList.clear();
@@ -136,6 +173,10 @@ public class LevelManager {
     }
 
     public void loadLevel(Level level, int dir) {
+        if(_currentLevel != null) {
+            _currentLevel.unload();
+        }
+
         _clearLists();
         _currentLevel = level;
         _currentLevel.load(dir);
@@ -156,5 +197,25 @@ public class LevelManager {
 
     public List<String> getPowerupHints() {
         return _unlockedPowerupHints;
+    }
+
+    public void breakLevel() {
+        _currentLevel.setBroken(true);
+        if(_shakeTimer != null && _shakeTimer.isBusy()) {
+            _shakeTimer.stop();
+        }
+        _shakeTimer = new CountTimer(_shakeTask, 50f, 0, 0.01f);
+    }
+
+    public boolean isShaking() {
+        return(_shakeTimer != null && _shakeTimer.isBusy());
+    }
+
+    public float getShakeX() {
+        return _shakeX;
+    }
+
+    public float getShakeY() {
+        return _shakeY;
     }
 }

@@ -34,7 +34,7 @@ public class Level1 extends Level {
         _levelManager.createBlimp(this, 480, 480);
 
         //obstacles
-        _levelManager.createWall(this, 0, _floorLevel, 20, 320);
+        _levelManager.createWall(this, -50, _floorLevel, 70, 320);
         _levelManager.createWall(this, 20, _floorLevel, 60, 80);
         _levelManager.createWall(this, 350, _floorLevel, 80, 80);
         _levelManager.createWall(this, 500, _floorLevel, 80, 160);
@@ -46,7 +46,7 @@ public class Level1 extends Level {
         if(dir == -1) {
             _jeff = _levelManager.createJeff(Level1.this, 115, 480);
         } else if(dir == 0) {
-            _jeff = _levelManager.createJeff(Level1.this, 20, _floorLevel);
+            _jeff = _levelManager.createJeff(Level1.this, 20, _floorLevel + 320);
         } else {
             _jeff = _levelManager.createJeff(Level1.this, 720, _floorLevel);
         }
@@ -82,6 +82,11 @@ public class Level1 extends Level {
     @Override
     public Level getRight() {
         return LevelManager.getInstance().level2;
+    }
+
+    @Override
+    public Level getLeft() {
+        return LevelManager.getInstance().level6;
     }
 
     @Override

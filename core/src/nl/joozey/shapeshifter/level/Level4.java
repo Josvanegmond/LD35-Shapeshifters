@@ -97,13 +97,12 @@ public class Level4 extends Level implements GameObjectObserver {
         _reshapeLevel();
 
         new CountTimer(new CountTimer.Task() {
-            private float _jeffsSavedX;
+            private float _jeffsSavedX = _jeff.getPosition().x;
             @Override
             public void count(float amount) {
                 Color randomColor = new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 1f);
                 _jeff.setColor(randomColor);
-                _jeffsSavedX = _jeff.getPosition().x;
-                if (amount > 0.5f) {
+                if (amount > 0.3f) {
                     _jeff.freeze(false);
                     _jeff.setShape(0);
                     //fall down but stay where you are
@@ -117,7 +116,7 @@ public class Level4 extends Level implements GameObjectObserver {
                 _jeff.setPower(1);
                 setMessage("You feel strangely happy. Try to press TAB!");
             }
-        }, 300f, 2, 0.01f);
+        }, 600f, 2, 0.01f);
     }
 
     private void _reshapeLevel() {

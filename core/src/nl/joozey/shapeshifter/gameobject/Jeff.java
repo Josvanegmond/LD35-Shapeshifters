@@ -15,6 +15,7 @@ import nl.joozey.shapeshifter.level.Level;
 import nl.joozey.shapeshifter.level.LevelManager;
 import nl.joozey.shapeshifter.main.Constants;
 import nl.joozey.shapeshifter.util.CountTimer;
+import nl.joozey.shapeshifter.util.HSL;
 import nl.joozey.shapeshifter.util.InputManager;
 
 /**
@@ -29,12 +30,14 @@ public class Jeff extends GameObject implements InputProcessor {
     private float _speed = 180f;
     private float _jumpForceModifier = 0f;
     private float _jumpForce = 1000f;
+    private float _jumpMultiplier = 1f;
     private float _gravity = 400;
     private float _angle;
     private boolean _hitFloor;
     private boolean _jumpPressed;
     private boolean _actionPressed;
-    private int _powerLevel;
+    private boolean _actionActivated;
+    private int _powerLevel = 3;
 
     private int _shape;
     private int _previousShape;
@@ -67,6 +70,10 @@ public class Jeff extends GameObject implements InputProcessor {
                 }
             }
         };
+
+        if(_powerLevel >= 5) {
+            _jumpMultiplier = 2f;
+        }
     }
 
     public void setColor(Color color) {
@@ -141,7 +148,21 @@ public class Jeff extends GameObject implements InputProcessor {
         }
 
         if (_jumpPressed && _hitFloor) {
-            _jumpForceModifier = _jumpForce;
+            _jumpForceModifier = _jumpForce * _jumpMultiplier;
+        }
+
+        dimension = CollisionHelper.check(this, dimension);
+        if (dimension.y == this.getPosition().y) {
+            if (_jumpForceModifier > 0 && !_hitFloor) {
+                _jumpForceModifier = _gravity - 1;
+            }
+            if(!_hitFloor && _shape == 2) {
+                LevelManager.getInstance().breakLevel();
+            }
+            _hitFloor = true;
+
+        } else {
+            _hitFloor = false;
         }
 
         if (_actionPressed) {
@@ -153,24 +174,18 @@ public class Jeff extends GameObject implements InputProcessor {
                 }
             }
 
-            if (_powerLevel >= 1 && _shape == 1) {
-                setSize(250, 10);
+            if (!_actionActivated && _powerLevel >= 2 && _shape == 1) {
+                setSize(200, 10);
+                dimension.x -= 25;
             }
+            _actionActivated = true;
 
-        } else {
-            if (_powerLevel >= 1 && _shape == 1) {
+        } else if(_actionActivated) {
+            if (_powerLevel >= 2 && _shape == 1) {
                 setSize(150, 10);
+                dimension.x += 25;
             }
-        }
-
-        dimension = CollisionHelper.check(this, dimension);
-        if (dimension.y == this.getPosition().y) {
-            if (_jumpForceModifier > 0 && !_hitFloor) {
-                _jumpForceModifier = _gravity - 1;
-            }
-            _hitFloor = true;
-        } else {
-            _hitFloor = false;
+            _actionActivated = false;
         }
 
         setPosition(dimension.x, dimension.y);
@@ -198,8 +213,29 @@ public class Jeff extends GameObject implements InputProcessor {
         }, duration, 0, 0.01f);
     }
 
+    public void redbow(float duration) {
+        CountTimer rainbowTimer = new CountTimer(new CountTimer.Task() {
+            @Override
+            public void count(float amount) {
+                HSL hsl = new HSL(Constants.RINN_COLOR);
+                hsl.s = (float) Math.random() * .5f + .5f;
+                hsl.l = (float) Math.random() * .5f + .25f;
+                _color = hsl.toRGB();
+            }
+
+            @Override
+            public void finish() {
+                setShape(_shape);
+            }
+        }, duration, 0, 0.01f);
+    }
+
     public void setPower(int power) {
         _powerLevel = power;
+
+        if(_powerLevel >= 5) {
+            _jumpMultiplier = 1.2f;
+        }
     }
 
     public int getPower() {
@@ -260,15 +296,15 @@ public class Jeff extends GameObject implements InputProcessor {
             setShape(1);
         }
 
-        if (_powerLevel >= 2 && keycode == Input.Keys.NUM_3) {
+        if (_powerLevel >= 3 && keycode == Input.Keys.NUM_3) {
             setShape(2);
         }
 
-        if (_powerLevel >= 3 && keycode == Input.Keys.NUM_4) {
+        if (_powerLevel >= 4 && keycode == Input.Keys.NUM_4) {
             setShape(3);
         }
 
-        if (_powerLevel >= 4 && keycode == Input.Keys.NUM_5) {
+        if (_powerLevel >= 5 && keycode == Input.Keys.NUM_5) {
             setShape(4);
         }
 

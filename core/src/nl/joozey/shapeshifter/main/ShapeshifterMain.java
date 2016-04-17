@@ -17,7 +17,7 @@ public class ShapeshifterMain extends ApplicationAdapter {
         _batch = new SpriteBatch();
 
         Gdx.input.setInputProcessor(InputManager.getInstance());
-        LevelManager.getInstance().loadLevel(LevelManager.getInstance().level5, 0);
+        LevelManager.getInstance().loadLevel(LevelManager.getInstance().level2, 0);
     }
 
     @Override

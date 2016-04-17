@@ -25,6 +25,7 @@ public class Level implements InputProcessor {
     protected LevelManager _levelManager;
     protected String _message = "";
     protected boolean _showPowerups;
+    protected boolean _isBroken;
 
     protected float _floorLevel = 70;
 
@@ -57,11 +58,14 @@ public class Level implements InputProcessor {
 
         float alpha = LevelManager.getInstance().getDimFactor();
 
+        float shakeX = _levelManager.getShakeX();
+        float shakeY = _levelManager.getShakeY();
+
         batch.setColor(1f, 1f, 1f, 1f);
-        batch.draw(Constants.grayBackground, 0, 0);
+        batch.draw(Constants.grayBackground, 0 + shakeX, 0 + shakeY);
 
         batch.setColor(1f, 1f, 1f, alpha);
-        batch.draw(Constants.greenBackground, 0, 0);
+        batch.draw(Constants.greenBackground, 0 + shakeX, 0 + shakeY);
 
         batch.end();
         batch.begin();
@@ -122,6 +126,14 @@ public class Level implements InputProcessor {
 
     public void onTouched(GameObject gameObject) {
 
+    }
+
+    public void setBroken(boolean broken) {
+        _isBroken = broken;
+    }
+
+    public boolean isBroken() {
+        return _isBroken;
     }
 
     @Override
