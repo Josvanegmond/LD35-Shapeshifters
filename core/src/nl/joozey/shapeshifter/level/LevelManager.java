@@ -25,6 +25,7 @@ public class LevelManager {
     public final Level level2 = new Level2();
     public final Level level3 = new Level3();
     public final Level level4 = new Level4();
+    public final Level level5 = new Level5();
 
     private Jeff _jeff;
     private Rinn _rinn;
@@ -32,9 +33,11 @@ public class LevelManager {
     private List<FairyBlimp> _blimpList;
     private List<WallObject> _wallList;
     private List<GameObject> _characterList;
-    private List<GameObject> _dialogList;
+    private List<DialogObject> _dialogList;
 
     private float _dimLevel = TOTAL_BLIMPS;
+
+    private List<String> _unlockedPowerupHints;
 
     private Level _currentLevel;
 
@@ -46,10 +49,14 @@ public class LevelManager {
     }
 
     private LevelManager() {
-        _blimpList = new ArrayList<>();
-        _wallList = new ArrayList<>();
-        _characterList = new ArrayList<>();
-        _dialogList = new ArrayList<>();
+        _unlockedPowerupHints = new ArrayList<String>();
+        _unlockedPowerupHints.add("Pressing TAB gives you this clear overview of nothing!");
+        _unlockedPowerupHints.add("Press E, F, SHIFT or ENTER to unlock your shape power");
+
+        _blimpList = new ArrayList<FairyBlimp>();
+        _wallList = new ArrayList<WallObject>();
+        _characterList = new ArrayList<GameObject>();
+        _dialogList = new ArrayList<DialogObject>();
     }
 
     public void clearDialogs() {
@@ -57,7 +64,7 @@ public class LevelManager {
     }
 
     public List<GameObject> getAllGameObjects() {
-        List<GameObject> list = new ArrayList<>();
+        List<GameObject> list = new ArrayList<GameObject>();
         list.addAll(_blimpList);
         list.addAll(_wallList);
         list.addAll(_characterList);
@@ -99,6 +106,14 @@ public class LevelManager {
         return _rinn;
     }
 
+    public Jeff getJeff() {
+        return _jeff;
+    }
+
+    public Rinn getRinn() {
+        return _rinn;
+    }
+
     public DialogObject createDialog(Level level, float x, float y, float w, float h, String message, boolean consumable) {
         DialogObject dialog = new DialogObject(level, x, y, w, h, message, consumable);
         _dialogList.add(dialog);
@@ -137,5 +152,9 @@ public class LevelManager {
     public void run(Batch batch) {
         _currentLevel.run();
         _currentLevel.draw(batch);
+    }
+
+    public List<String> getPowerupHints() {
+        return _unlockedPowerupHints;
     }
 }

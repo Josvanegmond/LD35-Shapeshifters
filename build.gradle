@@ -38,7 +38,6 @@ project(":desktop") {
         compile project(":core")
         compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
     }
 }
@@ -53,12 +52,7 @@ project(":html") {
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
         compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources"
-        compile "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"
         compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.2:sources"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.2:sources"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.2:sources"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion:sources"
     }
 }
 
@@ -68,10 +62,7 @@ project(":core") {
 
     dependencies {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "net.dermetfan.libgdx-utils:libgdx-utils:0.13.2"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:0.13.2"
-        compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
     }
 }
 

@@ -46,6 +46,11 @@ public class Level4 extends Level implements GameObjectObserver {
     }
 
     @Override
+    public Level getRight() {
+        return LevelManager.getInstance().level5;
+    }
+
+    @Override
     public void onChangeDimension(GameObject gameObject, Rectangle dimension) {
         if (gameObject == _rinn) {
             int rinnStage = _rinn.getStage();
@@ -108,6 +113,9 @@ public class Level4 extends Level implements GameObjectObserver {
 
             @Override
             public void finish() {
+                //new powerup!
+                _jeff.setPower(1);
+                setMessage("You feel strangely happy. Try to press TAB!");
             }
         }, 300f, 2, 0.01f);
     }
@@ -125,7 +133,7 @@ public class Level4 extends Level implements GameObjectObserver {
 
         //obstacles
         _levelManager.createWall(this, 150, _floorLevel + 50, 300, 70);
-        _levelManager.createWall(this, 750, _floorLevel, 50, 400);
+        _levelManager.createWall(this, 730, _floorLevel, 70, 400);
         _levelManager.createWall(this, 150, _floorLevel + 120, 100, 100);
         _levelManager.createWall(this, 650, _floorLevel, 100, 200);
         _levelManager.createWall(this, 100, 360, 350, 10);
@@ -141,7 +149,7 @@ public class Level4 extends Level implements GameObjectObserver {
         if (dir == 0) {
             _jeff = _levelManager.createJeff(Level4.this, 20, _floorLevel);
         } else {
-            _jeff = _levelManager.createJeff(Level4.this, 720, _floorLevel);
+            _jeff = _levelManager.createJeff(Level4.this, 720, _floorLevel + 400);
         }
     }
 
@@ -164,8 +172,8 @@ public class Level4 extends Level implements GameObjectObserver {
     }
 
     private void _loadStage2Level() {
-        _levelManager.createDialog(this, 500, _floorLevel, 60, 80, "... Jeff ...", true);
-        _levelManager.createDialog(this, 250, _floorLevel + 120, 100, 200, "What have you done?", true);
+        _levelManager.createDialog(this, 250, _floorLevel + 120, 150, 200, "... Jeff ...", true);
+        _levelManager.createDialog(this, 650, _floorLevel + 100, 60, 80, "What have you done?", true);
         _levelManager.createDialog(this, 150, 490, 300, 100, "You ...  you killed it ... ", true);
     }
 }

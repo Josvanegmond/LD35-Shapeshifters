@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import nl.joozey.shapeshifter.gameobject.GameObject;
 import nl.joozey.shapeshifter.gameobject.Jeff;
+import nl.joozey.shapeshifter.gameobject.Rinn;
 import nl.joozey.shapeshifter.util.CountTimer;
 import nl.joozey.shapeshifter.util.InputManager;
 
@@ -35,7 +36,8 @@ public class Level2 extends Level {
         _levelManager.createWall(this, 150, _floorLevel + 40, 190, 200);
         _levelManager.createWall(this, 500, _floorLevel, 80, 80);
 
-        if(LevelManager.getInstance().createRinn(this, -100, 0).getStage() == 0) {
+        Rinn rinn = _levelManager.getRinn();
+        if(rinn != null && rinn.getStage() == 0) {
             _levelManager.createDialog(this, 123, _floorLevel, 30, 60, "Now, concentrate, focus on your shape and press TWO!", false);
             _levelManager.createDialog(this, 423, _floorLevel, 30, 60, "Fantastic! Now press ONE and come meet me in the next area.", false);
         }

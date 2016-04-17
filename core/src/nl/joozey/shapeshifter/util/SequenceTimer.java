@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class SequenceTimer extends Timer {
 
-    private List<Task> _taskList = new ArrayList<>();
+    private List<Task> _taskList = new ArrayList<Task>();
     private boolean _began = false;
     private boolean _finished = false;
 

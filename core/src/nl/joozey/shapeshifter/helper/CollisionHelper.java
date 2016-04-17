@@ -13,6 +13,24 @@ import nl.joozey.shapeshifter.level.LevelManager;
  */
 public class CollisionHelper {
 
+    public static boolean isColliding(GameObject collider) {
+
+        for (GameObject gameObject : LevelManager.getInstance().getAllGameObjects()) {
+
+            if (gameObject == collider) {
+                continue;
+            }
+
+            if (gameObject.getDimension().overlaps(collider.getDimension())) {
+                if (!gameObject.isGrabbableBy(collider)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public static Rectangle check(GameObject collider, Rectangle end) {
 
         Rectangle newEnd = new Rectangle(end);

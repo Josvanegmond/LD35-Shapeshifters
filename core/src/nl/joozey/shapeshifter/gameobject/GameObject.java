@@ -19,7 +19,7 @@ public abstract class GameObject {
 
     public GameObject() {
         _dimension = new Rectangle();
-        _gameObjectObserverList = new ArrayList<>();
+        _gameObjectObserverList = new ArrayList<GameObjectObserver>();
     }
 
     public abstract void draw(Batch batch);

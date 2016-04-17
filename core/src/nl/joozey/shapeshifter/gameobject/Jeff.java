@@ -14,6 +14,7 @@ import nl.joozey.shapeshifter.helper.CollisionHelper;
 import nl.joozey.shapeshifter.level.Level;
 import nl.joozey.shapeshifter.level.LevelManager;
 import nl.joozey.shapeshifter.main.Constants;
+import nl.joozey.shapeshifter.util.CountTimer;
 import nl.joozey.shapeshifter.util.InputManager;
 
 /**
@@ -33,8 +34,10 @@ public class Jeff extends GameObject implements InputProcessor {
     private boolean _hitFloor;
     private boolean _jumpPressed;
     private boolean _actionPressed;
+    private int _powerLevel;
 
     private int _shape;
+    private int _previousShape;
     private Color _color;
 
     private Timer _barrelRollTimer;
@@ -107,6 +110,7 @@ public class Jeff extends GameObject implements InputProcessor {
 
     public void setShape(int shape) {
         _morph(_shape, shape);
+        _previousShape = _shape;
         _shape = shape;
     }
 
@@ -140,13 +144,22 @@ public class Jeff extends GameObject implements InputProcessor {
             _jumpForceModifier = _jumpForce;
         }
 
-        if(_actionPressed) {
+        if (_actionPressed) {
             if (_shape == 0) {
                 synchronized (_barrelRollTask) {
                     if (!_barrelRollTask.isScheduled()) {
                         _barrelRollTimer.scheduleTask(_barrelRollTask, 0, 0.001f, 360);
                     }
                 }
+            }
+
+            if (_powerLevel >= 1 && _shape == 1) {
+                setSize(250, 10);
+            }
+
+        } else {
+            if (_powerLevel >= 1 && _shape == 1) {
+                setSize(150, 10);
             }
         }
 
@@ -162,13 +175,35 @@ public class Jeff extends GameObject implements InputProcessor {
 
         setPosition(dimension.x, dimension.y);
 
-        if(dimension.x + dimension.width * .5f < 0) {
+        if (dimension.x + dimension.width * .5f < 0) {
             LevelManager.getInstance().loadLeft();
         }
 
-        if(dimension.x + dimension.width * .5f > Gdx.graphics.getWidth()) {
+        if (dimension.x + dimension.width * .5f > Gdx.graphics.getWidth()) {
             LevelManager.getInstance().loadRight();
         }
+    }
+
+    public void rainbow(float duration) {
+        CountTimer rainbowTimer = new CountTimer(new CountTimer.Task() {
+            @Override
+            public void count(float amount) {
+                _color = new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 1f);
+            }
+
+            @Override
+            public void finish() {
+                setShape(_shape);
+            }
+        }, duration, 0, 0.01f);
+    }
+
+    public void setPower(int power) {
+        _powerLevel = power;
+    }
+
+    public int getPower() {
+        return _powerLevel;
     }
 
     @Override
@@ -212,12 +247,9 @@ public class Jeff extends GameObject implements InputProcessor {
             _jumpPressed = true;
         }
 
-        if(keycode == Input.Keys.ENTER || keycode == Input.Keys.E || keycode == Input.Keys.F ||
+        if (keycode == Input.Keys.ENTER || keycode == Input.Keys.E || keycode == Input.Keys.F ||
                 keycode == Input.Keys.SHIFT_RIGHT || keycode == Input.Keys.SHIFT_LEFT) {
             _actionPressed = true;
-        }
-
-        if (keycode == Input.Keys.E || keycode == Input.Keys.ENTER) {
         }
 
         if (keycode == Input.Keys.NUM_1) {
@@ -228,15 +260,15 @@ public class Jeff extends GameObject implements InputProcessor {
             setShape(1);
         }
 
-        if (keycode == Input.Keys.NUM_3) {
+        if (_powerLevel >= 2 && keycode == Input.Keys.NUM_3) {
             setShape(2);
         }
 
-        if (keycode == Input.Keys.NUM_4) {
+        if (_powerLevel >= 3 && keycode == Input.Keys.NUM_4) {
             setShape(3);
         }
 
-        if (keycode == Input.Keys.NUM_5) {
+        if (_powerLevel >= 4 && keycode == Input.Keys.NUM_5) {
             setShape(4);
         }
 
@@ -258,10 +290,19 @@ public class Jeff extends GameObject implements InputProcessor {
             _jumpPressed = false;
         }
 
-        if(keycode == Input.Keys.ENTER || keycode == Input.Keys.E || keycode == Input.Keys.F ||
+        if (keycode == Input.Keys.ENTER || keycode == Input.Keys.E || keycode == Input.Keys.F ||
                 keycode == Input.Keys.SHIFT_RIGHT || keycode == Input.Keys.SHIFT_LEFT ||
                 keycode == Input.Keys.ALT_LEFT || keycode == Input.Keys.ALT_RIGHT) {
             _actionPressed = false;
+        }
+
+        if (keycode == Input.Keys.NUM_1 || keycode == Input.Keys.NUM_2 || keycode == Input.Keys.NUM_3 ||
+                keycode == Input.Keys.NUM_4 || keycode == Input.Keys.NUM_5) {
+            if (CollisionHelper.isColliding(this)) {
+                _jumpPressed = false;
+                _jumpForceModifier = 0;
+                setShape(_previousShape);
+            }
         }
 
         return false;

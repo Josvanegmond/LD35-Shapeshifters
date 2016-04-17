@@ -15,7 +15,7 @@ import nl.joozey.shapeshifter.util.InputManager;
 /**
  * Created by mint on 16-4-16.
  */
-public class Level1 extends Level implements InputProcessor {
+public class Level1 extends Level {
 
     private boolean _levelStarted;
     private float _skyRectHeight;
@@ -26,7 +26,6 @@ public class Level1 extends Level implements InputProcessor {
 
     public void load(int dir) {
         super.load(dir);
-        InputManager.getInstance().addProcessor(this);
 
         //floor
         _levelManager.createWall(this, 0, 0, Gdx.graphics.getWidth(), _floorLevel);
@@ -100,46 +99,11 @@ public class Level1 extends Level implements InputProcessor {
     }
 
     @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
     public boolean keyUp(int keycode) {
         if (!_levelStarted && keycode == Input.Keys.SPACE) {
             _levelStarted = true;
             _startLevelAnimation();
         }
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
         return false;
     }
 }

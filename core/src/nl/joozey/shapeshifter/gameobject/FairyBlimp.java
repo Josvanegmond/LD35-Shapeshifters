@@ -41,11 +41,11 @@ public class FairyBlimp extends GameObject {
     @Override
     public void draw(Batch batch) {
         if (!_grabbed) {
-            Color _color = new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 1f);
+            Color color = new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 1f);
             Vector2 pos = getPosition();
             Vector2 size = getSize();
 
-            _shapeRenderer.setColor(_color);
+            _shapeRenderer.setColor(color);
             _shapeRenderer.begin();
             _shapeRenderer.set(ShapeRenderer.ShapeType.Filled);
             _shapeRenderer.rect(pos.x, pos.y, size.x, size.y);
