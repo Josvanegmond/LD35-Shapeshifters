@@ -56,7 +56,7 @@ public class Level2 extends Level implements GameObjectObserver {
         _levelManager.createWall(this, 150, _floorLevel + 40, 190, 200, true);
         _levelManager.createWall(this, 500, _floorLevel, 80, 80);
 
-        Rinn rinn = _levelManager.createRinn(this, -100, 0);
+        Rinn rinn = _levelManager.getRinn();
         if(rinn == null || rinn.getStage() == 0) {
             _levelManager.createDialog(this, 123, _floorLevel, 30, 60, "Now, concentrate, focus on your shape and press TWO!", false);
             _levelManager.createDialog(this, 423, _floorLevel, 30, 60, "Fantastic! Now press ONE and come meet me in the next area.", false);

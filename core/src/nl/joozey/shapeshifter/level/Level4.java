@@ -127,6 +127,13 @@ public class Level4 extends Level implements GameObjectObserver {
 
     private void _loadStage(int dir) {
 
+        //player
+        if (dir == 0) {
+            _jeff = _levelManager.createJeff(Level4.this, 20, _floorLevel);
+        } else {
+            _jeff = _levelManager.createJeff(Level4.this, 720, _floorLevel + 400);
+        }
+
         //floor
         _levelManager.createWall(this, 0, 0, Gdx.graphics.getWidth(), _floorLevel);
 
@@ -138,7 +145,7 @@ public class Level4 extends Level implements GameObjectObserver {
         _levelManager.createWall(this, 100, 360, 350, 10);
         _levelManager.createWall(this, 150, 390, 300, 100);
 
-        if(_jeff.getPower() > 0) {
+        if(_jeff != null && _jeff.getPower() > 0) {
             _reshaped = true;
         }
 
@@ -146,13 +153,6 @@ public class Level4 extends Level implements GameObjectObserver {
             _loadStage2Level();
         } else {
             _loadStage1Level();
-        }
-
-        //player
-        if (dir == 0) {
-            _jeff = _levelManager.createJeff(Level4.this, 20, _floorLevel);
-        } else {
-            _jeff = _levelManager.createJeff(Level4.this, 720, _floorLevel + 400);
         }
     }
 

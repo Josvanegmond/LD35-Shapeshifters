@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import java.util.ArrayList;
 import java.util.List;
 
+import nl.joozey.shapeshifter.gameobject.CorruptEnemy;
 import nl.joozey.shapeshifter.gameobject.CorruptObject;
 import nl.joozey.shapeshifter.gameobject.DialogObject;
 import nl.joozey.shapeshifter.gameobject.FairyBlimp;
@@ -34,6 +35,7 @@ public class LevelManager {
     private Rinn _rinn;
 
     private List<FairyBlimp> _blimpList;
+    private List<CorruptEnemy> _enemyList;
     private List<WallObject> _wallList;
     private List<CorruptObject> _corruptList;
     private List<GameObject> _characterList;
@@ -51,11 +53,12 @@ public class LevelManager {
     private CountTimer _shakeTimer;
     private CountTimer.Task _shakeTask = new CountTimer.Task() {
         float shakePower = 10f;
+
         @Override
         public void count(float amount) {
             float factor = 1f - amount;
-            _shakeX = (float)Math.random() * shakePower * factor - shakePower * factor * .5f;
-            _shakeY = (float)Math.random() * shakePower * factor - shakePower * factor * .5f;
+            _shakeX = (float) Math.random() * shakePower * factor - shakePower * factor * .5f;
+            _shakeY = (float) Math.random() * shakePower * factor - shakePower * factor * .5f;
         }
 
         @Override
@@ -79,12 +82,14 @@ public class LevelManager {
         _unlockedPowerupHints.add("Press THREE to square-smash!");
         _unlockedPowerupHints.add("Press FOUR to bounce to new heights!");
         _unlockedPowerupHints.add("Your speed has doubled!");
+        _unlockedPowerupHints.add("Press FIVE to unlock your ultimate form!");
 
         _blimpList = new ArrayList<FairyBlimp>();
         _wallList = new ArrayList<WallObject>();
         _characterList = new ArrayList<GameObject>();
         _dialogList = new ArrayList<DialogObject>();
         _corruptList = new ArrayList<CorruptObject>();
+        _enemyList = new ArrayList<CorruptEnemy>();
     }
 
     public void clearDialogs() {
@@ -98,10 +103,15 @@ public class LevelManager {
         list.addAll(_characterList);
         list.addAll(_dialogList);
         list.addAll(_corruptList);
+        list.addAll(_enemyList);
         return list;
     }
 
-    public GameObject createBlimp(Level level, float x, float y) {
+    public List<CorruptEnemy> getCorruptEnemies() {
+        return _enemyList;
+    }
+
+    public FairyBlimp createBlimp(Level level, float x, float y) {
         FairyBlimp blimp = new FairyBlimp(level, x, y);
         _blimpList.add(blimp);
         return blimp;
@@ -112,14 +122,14 @@ public class LevelManager {
     }
 
     public GameObject createCorrupt(Level level, float x, float y, float w, float h) {
-        CorruptObject corrupt =  new CorruptObject(x, y, w, h);
+        CorruptObject corrupt = new CorruptObject(x, y, w, h);
         _corruptList.add(corrupt);
         return corrupt;
     }
 
     public GameObject createWall(Level level, float x, float y, float w, float h, boolean breakable) {
         WallObject wall = null;
-        if(!(breakable && level.isBroken())) {
+        if (!(breakable && level.isBroken())) {
             wall = new WallObject(x, y, w, h, breakable);
             _wallList.add(wall);
         }
@@ -127,8 +137,8 @@ public class LevelManager {
     }
 
     public Jeff createJeff(Level level, float x, float y) {
-        if(_jeff == null) {
-            _jeff = new Jeff(level ,x, y);
+        if (_jeff == null) {
+            _jeff = new Jeff(level, x, y);
         } else {
             _jeff.setLevel(level);
             _jeff.setPosition(x, y);
@@ -138,7 +148,7 @@ public class LevelManager {
     }
 
     public Rinn createRinn(Level level, int x, float y) {
-        if(_rinn == null) {
+        if (_rinn == null) {
             _rinn = new Rinn(level, x, y);
         } else {
             _rinn.setLevel(level);
@@ -172,7 +182,7 @@ public class LevelManager {
 
     private void _clearLists() {
 
-        for(GameObject gameObject : getAllGameObjects()) {
+        for (GameObject gameObject : getAllGameObjects()) {
             gameObject.clearObservers();
         }
 
@@ -184,13 +194,15 @@ public class LevelManager {
     }
 
     public void loadLevel(Level level, int dir) {
-        if(_currentLevel != null) {
-            _currentLevel.unload();
-        }
+        if(level != null) {
+            if (_currentLevel != null) {
+                _currentLevel.unload();
+            }
 
-        _clearLists();
-        _currentLevel = level;
-        _currentLevel.load(dir);
+            _clearLists();
+            _currentLevel = level;
+            _currentLevel.load(dir);
+        }
     }
 
     public void loadLeft() {
@@ -212,14 +224,14 @@ public class LevelManager {
 
     public void breakLevel() {
         _currentLevel.setBroken(true);
-        if(_shakeTimer != null && _shakeTimer.isBusy()) {
+        if (_shakeTimer != null && _shakeTimer.isBusy()) {
             _shakeTimer.stop();
         }
         _shakeTimer = new CountTimer(_shakeTask, 50f, 0, 0.01f);
     }
 
     public boolean isShaking() {
-        return(_shakeTimer != null && _shakeTimer.isBusy());
+        return (_shakeTimer != null && _shakeTimer.isBusy());
     }
 
     public float getShakeX() {
@@ -228,5 +240,11 @@ public class LevelManager {
 
     public float getShakeY() {
         return _shakeY;
+    }
+
+    public CorruptEnemy createCorruptEnemy(Level level, float x, float y) {
+        CorruptEnemy enemy = new CorruptEnemy(level, x, y);
+        _enemyList.add(enemy);
+        return enemy;
     }
 }

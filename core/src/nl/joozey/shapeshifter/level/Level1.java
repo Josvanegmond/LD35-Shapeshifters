@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
+import nl.joozey.shapeshifter.gameobject.FairyBlimp;
 import nl.joozey.shapeshifter.gameobject.GameObject;
 import nl.joozey.shapeshifter.gameobject.Jeff;
 import nl.joozey.shapeshifter.util.CountTimer;
@@ -40,9 +41,6 @@ public class Level1 extends Level {
         //blimp
         if (_jeff.getPower() < 6) {
             _levelManager.createBlimp(this, 480, 480);
-            _jeff.setPower(6);
-            _jeff.rainbow(50);
-            setMessage("You feel all powerful.");
         }
 
         //obstacles
@@ -87,6 +85,15 @@ public class Level1 extends Level {
             }
         }, 200, 0, 0.01f)
                 .start();
+    }
+
+    @Override
+    public void onTouched(GameObject gameObject) {
+        if(gameObject instanceof FairyBlimp) {
+            _jeff.setPower(6);
+            _jeff.rainbow(50);
+            setMessage("You feel all powerful.");
+        }
     }
 
     @Override

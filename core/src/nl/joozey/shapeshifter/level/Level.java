@@ -39,7 +39,7 @@ public class Level implements InputProcessor {
 
         _levelManager = LevelManager.getInstance();
 
-        _levelManager.createWall(this, 0, 620, 800, 100);
+        _levelManager.createWall(this, 0, 700, 800, 100);
 
         Jeff jeff = _levelManager.getJeff();
 

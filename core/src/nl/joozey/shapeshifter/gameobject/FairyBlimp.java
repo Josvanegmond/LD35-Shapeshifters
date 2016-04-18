@@ -38,6 +38,10 @@ public class FairyBlimp extends GameObject {
         _initPosition = getPosition();
     }
 
+    public void setRadius(float radius) {
+        _radius = radius;
+    }
+
     @Override
     public void draw(Batch batch) {
         if (!_grabbed) {

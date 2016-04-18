@@ -39,12 +39,15 @@ public class Jeff extends GameObject implements InputProcessor {
     private boolean _jumpPressed;
     private boolean _actionPressed;
     private boolean _actionActivated;
-    private int _powerLevel = 6;
+    private int _powerLevel = 0;
+    private boolean _paralyze;
 
     private int _shape;
     private int _previousShape;
     private Color _color;
 
+    private CountTimer _redbowTimer;
+    private CountTimer _rainbowTimer;
     private Timer _barrelRollTimer;
     private Timer.Task _barrelRollTask;
 
@@ -73,7 +76,7 @@ public class Jeff extends GameObject implements InputProcessor {
             }
         };
 
-        if(_powerLevel >= 5) {
+        if (_powerLevel >= 5) {
             _speedMultiplier = 2f;
         }
     }
@@ -85,7 +88,7 @@ public class Jeff extends GameObject implements InputProcessor {
     private void _morph(int startShape, int endShape) {
 
         //final level, lock in superpower shape
-        if(_powerLevel == 7) {
+        if (_powerLevel == 7) {
             endShape = 4;
         }
 
@@ -138,33 +141,33 @@ public class Jeff extends GameObject implements InputProcessor {
         float factor = Gdx.graphics.getDeltaTime();
         Rectangle dimension = getDimension();
 
-        if(_shape != 4) {
+        if (_shape != 4) {
             dimension.y += _jumpForceModifier * factor;
             _jumpForceModifier = Math.max(0, _jumpForceModifier - 700 * factor);
 
             dimension.y -= _gravity * factor;
         }
 
-        if (_moveLeft) {
+        if (!_paralyze && _moveLeft) {
             dimension.x -= _speed * _speedMultiplier * factor;
         }
 
-        if (_moveRight) {
+        if (!_paralyze && _moveRight) {
             dimension.x += _speed * _speedMultiplier * factor;
         }
 
-        if(_shape == 4) {
-            if (_moveUp) {
+        if (_shape == 4) {
+            if (!_paralyze && _moveUp) {
                 dimension.y += _speed * _speedMultiplier * factor;
             }
 
-            if (_moveDown) {
+            if (!_paralyze && _moveDown) {
                 dimension.y -= _speed * _speedMultiplier * factor;
             }
         }
 
-        if(_shape != 4) {
-            if (_jumpPressed && _hitFloor) {
+        if (_shape != 4) {
+            if (!_paralyze && _jumpPressed && _hitFloor) {
                 _jumpForceModifier = _jumpForce;
             }
         }
@@ -174,7 +177,7 @@ public class Jeff extends GameObject implements InputProcessor {
             if (_jumpForceModifier > 0 && !_hitFloor) {
                 _jumpForceModifier = _gravity - 1;
             }
-            if(!_hitFloor && _shape == 2) {
+            if (!_hitFloor && _shape == 2) {
                 LevelManager.getInstance().breakLevel();
             }
             _hitFloor = true;
@@ -183,7 +186,7 @@ public class Jeff extends GameObject implements InputProcessor {
             _hitFloor = false;
         }
 
-        if (_actionPressed) {
+        if (!_paralyze && _actionPressed) {
             if (_shape == 0) {
                 synchronized (_barrelRollTask) {
                     if (!_barrelRollTask.isScheduled()) {
@@ -198,7 +201,7 @@ public class Jeff extends GameObject implements InputProcessor {
             }
             _actionActivated = true;
 
-        } else if(_actionActivated) {
+        } else if (_actionActivated) {
             if (_powerLevel >= 2 && _shape == 1) {
                 setSize(150, 10);
                 dimension.x += 25;
@@ -215,43 +218,54 @@ public class Jeff extends GameObject implements InputProcessor {
         if (dimension.x + dimension.width * .5f > Gdx.graphics.getWidth()) {
             LevelManager.getInstance().loadRight();
         }
+
+        _paralyze = false;
     }
 
     public void rainbow(float duration) {
-        CountTimer rainbowTimer = new CountTimer(new CountTimer.Task() {
-            @Override
-            public void count(float amount) {
-                _color = new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 1f);
-            }
+        if (_rainbowTimer == null || !_rainbowTimer.isBusy()) {
+            _rainbowTimer = new CountTimer(new CountTimer.Task() {
+                @Override
+                public void count(float amount) {
+                    _color = new Color((float) Math.random(), (float) Math.random(), (float) Math.random(), 1f);
+                }
 
-            @Override
-            public void finish() {
-                setShape(_shape);
-            }
-        }, duration, 0, 0.01f);
+                @Override
+                public void finish() {
+                    setShape(_shape);
+                }
+            }, duration, 0, 0.01f);
+        }
+    }
+
+    public void decrease() {
+        setSize(getSize().x-0.3f, getSize().y-0.3f);
     }
 
     public void redbow(float duration) {
-        CountTimer redbowTimer = new CountTimer(new CountTimer.Task() {
-            @Override
-            public void count(float amount) {
-                HSL hsl = new HSL(Constants.RINN_COLOR);
-                hsl.s = (float) Math.random() * .5f + .5f;
-                hsl.l = (float) Math.random() * .5f + .25f;
-                _color = hsl.toRGB();
-            }
+        if (_redbowTimer == null || !_redbowTimer.isBusy()) {
+            final Color color = _color;
+            _redbowTimer = new CountTimer(new CountTimer.Task() {
+                @Override
+                public void count(float amount) {
+                    HSL hsl = new HSL(Constants.RINN_COLOR);
+                    hsl.s = (float) Math.random() * .5f + .5f;
+                    hsl.l = (float) Math.random() * .5f + .25f;
+                    _color = hsl.toRGB();
+                }
 
-            @Override
-            public void finish() {
-                setShape(_shape);
-            }
-        }, duration, 0, 0.01f);
+                @Override
+                public void finish() {
+                    _color = color;
+                }
+            }, duration, 0, 0.01f);
+        }
     }
 
     public void setPower(int power) {
         _powerLevel = power;
 
-        if(_powerLevel >= 5) {
+        if (_powerLevel >= 5) {
             _speedMultiplier = 2f;
         }
     }
@@ -417,10 +431,11 @@ public class Jeff extends GameObject implements InputProcessor {
     }
 
     public void paralyze() {
-        _jumpForce = 0;
-        _actionActivated = false;
-        _jumpPressed = false;
-        _moveRight = false;
-        _moveLeft = false;
+        _paralyze = true;
+//        _jumpForce = 0;
+//        _actionActivated = false;
+//        _jumpPressed = false;
+//        _moveRight = false;
+//        _moveLeft = false;
     }
 }
