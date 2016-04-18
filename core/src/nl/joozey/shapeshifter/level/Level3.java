@@ -35,7 +35,7 @@ public class Level3 extends Level {
 
         //rinn
         Rinn rinn = _levelManager.getRinn();
-        if(rinn.getStage() == 0) {
+        if(rinn == null || (rinn != null && rinn.getStage() == 0)) {
             _rinn = _levelManager.createRinn(Level3.this, 650, _floorLevel);
             _rinn.clearObservers();
             _rinn.stopMoving();
