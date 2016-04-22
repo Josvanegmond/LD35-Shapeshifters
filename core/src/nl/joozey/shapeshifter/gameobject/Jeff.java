@@ -45,6 +45,7 @@ public class Jeff extends GameObject implements InputProcessor {
     private int _shape;
     private int _previousShape;
     private Color _color;
+    private boolean _sticky;
 
     private CountTimer _redbowTimer;
     private CountTimer _rainbowTimer;
@@ -69,7 +70,7 @@ public class Jeff extends GameObject implements InputProcessor {
         _barrelRollTask = new Timer.Task() {
             @Override
             public void run() {
-                _angle+=8;
+                _angle += 8;
                 if (_angle > 360) {
                     _angle = 0;
                 }
@@ -86,6 +87,7 @@ public class Jeff extends GameObject implements InputProcessor {
     }
 
     private void _morph(int startShape, int endShape) {
+        _sticky = false;
 
         //final level, lock in superpower shape
         if (_powerLevel == 7) {
@@ -141,13 +143,6 @@ public class Jeff extends GameObject implements InputProcessor {
         float factor = Gdx.graphics.getDeltaTime();
         Rectangle dimension = getDimension();
 
-        if (_shape != 4) {
-            dimension.y += _jumpForceModifier * factor;
-            _jumpForceModifier = Math.max(0, _jumpForceModifier - 700 * factor);
-
-            dimension.y -= _gravity * factor;
-        }
-
         if (!_paralyze && _moveLeft) {
             dimension.x -= _speed * _speedMultiplier * factor;
         }
@@ -157,7 +152,7 @@ public class Jeff extends GameObject implements InputProcessor {
         }
 
         if (_shape == 4) {
-            if (!_paralyze && _moveUp) {
+            if (!_paralyze && (_moveUp || _jumpPressed)) {
                 dimension.y += _speed * _speedMultiplier * factor;
             }
 
@@ -170,9 +165,23 @@ public class Jeff extends GameObject implements InputProcessor {
             if (!_paralyze && _jumpPressed && _hitFloor) {
                 _jumpForceModifier = _jumpForce;
             }
+
+            dimension.y += _jumpForceModifier * factor;
+            _jumpForceModifier = Math.max(0, _jumpForceModifier - 700 * factor);
+            dimension.y -= _gravity * factor;
         }
 
-        dimension = CollisionHelper.check(this, dimension);
+        Rectangle hitRect = new Rectangle(0, 0, 0, 0);
+        dimension = CollisionHelper.check(this, dimension, hitRect);
+
+        if (hitRect.y == 0 &&
+                (hitRect.x == 1 || hitRect.width == 1) &&
+                _sticky &&
+                !_paralyze &&
+                (_moveUp || _jumpPressed)) {
+            dimension.y += _gravity * factor * .2f;
+        }
+
         if (dimension.y == this.getPosition().y) {
             if (_jumpForceModifier > 0 && !_hitFloor) {
                 _jumpForceModifier = _gravity - 1;
@@ -198,6 +207,7 @@ public class Jeff extends GameObject implements InputProcessor {
             if (!_actionActivated && _powerLevel >= 2 && _shape == 1) {
                 setSize(200, 10);
                 dimension.x -= 25;
+                _sticky = true;
             }
             _actionActivated = true;
 
@@ -205,6 +215,7 @@ public class Jeff extends GameObject implements InputProcessor {
             if (_powerLevel >= 2 && _shape == 1) {
                 setSize(150, 10);
                 dimension.x += 25;
+                _sticky = false;
             }
             _actionActivated = false;
         }
@@ -239,7 +250,7 @@ public class Jeff extends GameObject implements InputProcessor {
     }
 
     public void decrease() {
-        setSize(getSize().x-0.3f, getSize().y-0.3f);
+        setSize(getSize().x - 0.3f, getSize().y - 0.3f);
     }
 
     public void redbow(float duration) {
