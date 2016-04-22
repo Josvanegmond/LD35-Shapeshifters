@@ -77,7 +77,7 @@ public class LevelManager {
 
     private LevelManager() {
         _unlockedPowerupHints = new ArrayList<String>();
-        _unlockedPowerupHints.add("Pressing TAB gives you this clear overview of nothing!");
+        _unlockedPowerupHints.add("Pressing P gives you this overview of your powers!");
         _unlockedPowerupHints.add("Press E, F, SHIFT or ENTER to unlock your shape power!");
         _unlockedPowerupHints.add("Press THREE to square-smash!");
         _unlockedPowerupHints.add("Press FOUR to bounce to new heights!");

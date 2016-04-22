@@ -75,7 +75,7 @@ public class Level6 extends Level {
         if(gameObject instanceof FairyBlimp) {
             _jeff.setPower(3);
             _jeff.rainbow(200);
-            setMessage("You feel super-empowered! Don't forget TAB!");
+            setMessage("You feel super-empowered! Don't forget P!");
         }
     }
 }

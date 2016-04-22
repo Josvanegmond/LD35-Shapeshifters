@@ -114,7 +114,7 @@ public class Level4 extends Level implements GameObjectObserver {
             public void finish() {
                 //new powerup!
                 _jeff.setPower(1);
-                setMessage("You feel strangely happy. Try to press TAB!");
+                setMessage("You feel strangely happy. Try to press P!");
             }
         }, 600f, 2, 0.01f);
     }

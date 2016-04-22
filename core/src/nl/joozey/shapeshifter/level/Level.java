@@ -154,7 +154,7 @@ public class Level implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Input.Keys.TAB) {
+        if (keycode == Input.Keys.P) {
             _showPowerups = true;
         }
         return false;
@@ -162,7 +162,7 @@ public class Level implements InputProcessor {
 
     @Override
     public boolean keyUp(int keycode) {
-        if (keycode == Input.Keys.TAB) {
+        if (keycode == Input.Keys.P) {
             _showPowerups = false;
         }
         return false;
