@@ -65,6 +65,7 @@ public class Level2 extends Level implements GameObjectObserver {
         if(rinn != null && rinn.getStage() == 4) {
             _rinn = _levelManager.createRinn(Level2.this, 200, _floorLevel + 240);
             _levelManager.createDialog(this, 0, _floorLevel, 100, 100, "Jeff ... please stop ... please ...", true);
+            _levelManager.createCorruptEnemy(this, 250, _floorLevel + 20);
             _rinn.stopMoving();
         }
     }
