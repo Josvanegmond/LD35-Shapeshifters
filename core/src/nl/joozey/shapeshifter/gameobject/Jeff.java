@@ -69,7 +69,7 @@ public class Jeff extends GameObject implements InputProcessor {
         _barrelRollTask = new Timer.Task() {
             @Override
             public void run() {
-                _angle++;
+                _angle+=8;
                 if (_angle > 360) {
                     _angle = 0;
                 }
@@ -190,7 +190,7 @@ public class Jeff extends GameObject implements InputProcessor {
             if (_shape == 0) {
                 synchronized (_barrelRollTask) {
                     if (!_barrelRollTask.isScheduled()) {
-                        _barrelRollTimer.scheduleTask(_barrelRollTask, 0, 0.001f, 360);
+                        _barrelRollTimer.scheduleTask(_barrelRollTask, 0, 0.01f, 45);
                     }
                 }
             }
