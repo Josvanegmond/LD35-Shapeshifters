@@ -86,13 +86,6 @@ public class CorruptObject extends GameObject {
 
     @Override
     public boolean isGrabbableBy(GameObject gameObject) {
-        if (!_dissolved && !_dissolving && gameObject instanceof Jeff) {
-            Jeff jeff = (Jeff) gameObject;
-            if (jeff.getShape() == 0 && jeff.isActionActive()) {
-                return false;
-            }
-        }
-
         return true;
     }
 
@@ -103,7 +96,7 @@ public class CorruptObject extends GameObject {
             if (jeff.getShape() == 4 | (jeff.getShape() == 0 && jeff.isActionActive())) {
                 _dissolve();
             } else {
-                jeff.redbow(100);
+                jeff.redbow(50);
                 jeff.paralyze();
             }
         }

@@ -1,11 +1,7 @@
 package nl.joozey.shapeshifter.level;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
 import nl.joozey.shapeshifter.gameobject.FairyBlimp;
@@ -14,7 +10,6 @@ import nl.joozey.shapeshifter.gameobject.GameObjectObserver;
 import nl.joozey.shapeshifter.gameobject.Jeff;
 import nl.joozey.shapeshifter.gameobject.Rinn;
 import nl.joozey.shapeshifter.util.CountTimer;
-import nl.joozey.shapeshifter.util.InputManager;
 
 /**
  * Created by mint on 16-4-16.
@@ -36,7 +31,7 @@ public class Level2 extends Level implements GameObjectObserver {
         super.load(dir);
 
         //player
-        if(dir == 0) {
+        if (dir == 0) {
             _jeff = _levelManager.createJeff(Level2.this, 20, _floorLevel);
         } else {
             _jeff = _levelManager.createJeff(Level2.this, 720, _floorLevel);
@@ -48,7 +43,7 @@ public class Level2 extends Level implements GameObjectObserver {
         _levelManager.createWall(this, 0, 0, Gdx.graphics.getWidth(), _floorLevel);
 
         //blimp
-        if(_jeff.getPower() < 4) {
+        if (_jeff.getPower() < 4) {
             _levelManager.createBlimp(this, 280, 380);
         }
 
@@ -56,16 +51,21 @@ public class Level2 extends Level implements GameObjectObserver {
         _levelManager.createWall(this, 150, _floorLevel + 40, 190, 200, true);
         _levelManager.createWall(this, 500, _floorLevel, 80, 80);
 
+        //rinn stage
+        if(_jeff.getPower() == 3) {
+            _levelManager.createRinn(this, -100, 0);
+            _levelManager.getRinn().setStage(4);
+        }
+
         Rinn rinn = _levelManager.getRinn();
-        if(rinn == null || rinn.getStage() == 0) {
+        if (rinn == null || rinn.getStage() == 0) {
             _levelManager.createDialog(this, 123, _floorLevel, 30, 60, "Now, concentrate, focus on your shape and press TWO!", false);
             _levelManager.createDialog(this, 423, _floorLevel, 30, 60, "Fantastic! Now press ONE and come meet me in the next area.", false);
         }
 
-        if(rinn != null && rinn.getStage() == 4) {
+        if (rinn != null && rinn.getStage() == 4) {
             _rinn = _levelManager.createRinn(Level2.this, 200, _floorLevel + 240);
             _levelManager.createDialog(this, 0, _floorLevel, 100, 100, "Jeff ... please stop ... please ...", true);
-            _levelManager.createCorruptEnemy(this, 250, _floorLevel + 20);
             _rinn.stopMoving();
         }
     }
@@ -94,7 +94,7 @@ public class Level2 extends Level implements GameObjectObserver {
     @Override
     public void setBroken(boolean broken) {
         super.setBroken(broken);
-        if(_rinn != null && (_rinn.getStage() == 4 || _rinn.getStage() == 5) && broken) {
+        if (_rinn != null && (_rinn.getStage() == 4 || _rinn.getStage() == 5) && broken) {
             _rinn.moveRight();
             _rinn.setStage(6);
             _rinn.morph(0);
@@ -104,16 +104,17 @@ public class Level2 extends Level implements GameObjectObserver {
 
     @Override
     public void onTouched(GameObject gameObject) {
-        if(gameObject instanceof FairyBlimp) {
+        if (gameObject instanceof FairyBlimp) {
             _jeff.setPower(5);
             _jeff.rainbow(100);
             setMessage("You feel the power flow through you");
         }
 
-        if(_rinn != null && gameObject == _rinn) {
-            if(_rinn.getStage() == 5) {
+        if (_rinn != null && gameObject == _rinn) {
+            if (_rinn.getStage() == 5) {
                 CountTimer fallTimer = new CountTimer(new CountTimer.Task() {
                     private float _jeffsSavedX = _jeff.getPosition().x;
+
                     @Override
                     public void count(float amount) {
                         _jeff.setPosition(_jeffsSavedX, _jeff.getPosition().y);
@@ -124,11 +125,11 @@ public class Level2 extends Level implements GameObjectObserver {
                     }
                 }, 100, 0, 0.01f);
             }
-            if(_rinn.getStage() == 6) {
+            if (_rinn.getStage() == 6) {
                 _rinn.setStage(7);
                 _jeff.setPower(4);
                 _jeff.redbow(400);
-                setMessage("When you touch Rinn, you absorb her being. You shiver.");
+                setMessage("When you touch Rinn, you absorb her being. P for more power!");
                 LevelManager.getInstance().clearDialogs();
             }
         }
@@ -136,25 +137,29 @@ public class Level2 extends Level implements GameObjectObserver {
 
     @Override
     public void onChangeDimension(GameObject gameObject, Rectangle dimension) {
-        if(_rinn != null && _jeff != null && gameObject == _jeff) {
-            if(_rinn.getStage() == 4 && dimension.y > _floorLevel + 200) {
+        if (_rinn != null && _jeff != null && gameObject == _jeff) {
+            if (_rinn.getStage() == 4 && dimension.y > _floorLevel + 200) {
                 _rinn.morph(1);
                 _rinn.setStage(5);
             }
 
-            if(_rinn.getStage() == 5) {
+            if (_rinn.getStage() == 5) {
                 boolean left = _rinn.getPosition().x > _jeff.getPosition().x;
 
-                if(_rinn.getPosition().x + _rinn.getSize().x * .5f > 150 && left) {
+                if (_rinn.getPosition().x + _rinn.getSize().x * .5f > 150 && left) {
                     _rinn.moveLeft();
-                }  else {
+                } else {
 
-                    if(_rinn.getPosition().x + _rinn.getSize().x * .5f < 350 && !left){
+                    if (_rinn.getPosition().x + _rinn.getSize().x * .5f < 350 && !left) {
                         _rinn.moveRight();
                     } else {
                         _rinn.stopMoving();
                     }
                 }
+            }
+
+            if(_rinn.getPosition().x > 700) {
+                _rinn.stopMoving();
             }
         }
     }

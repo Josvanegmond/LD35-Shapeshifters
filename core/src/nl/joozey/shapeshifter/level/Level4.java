@@ -175,8 +175,8 @@ public class Level4 extends Level implements GameObjectObserver {
     }
 
     private void _loadStage2Level() {
-        _levelManager.createDialog(this, 250, _floorLevel + 120, 150, 200, "... Jeff ...", true);
-        _levelManager.createDialog(this, 650, _floorLevel + 100, 60, 120, "What have you done?", true);
+        _levelManager.createDialog(this, 250, _floorLevel + 120, 200, 200, "... Jeff ...", true);
+        _levelManager.createDialog(this, 600, _floorLevel + 100, 110, 200, "What have you done?", true);
         _levelManager.createDialog(this, 150, 490, 300, 100, "You ...  you killed it ... ", true);
     }
 }

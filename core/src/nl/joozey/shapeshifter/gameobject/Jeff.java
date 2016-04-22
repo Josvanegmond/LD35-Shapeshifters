@@ -32,7 +32,7 @@ public class Jeff extends GameObject implements InputProcessor {
     private float _speed = 180f;
     private float _speedMultiplier = 1f;
     private float _jumpForceModifier = 0f;
-    private float _jumpForce = 1000f;
+    private float _jumpForce = 820f;
     private float _gravity = 400;
     private float _angle;
     private boolean _hitFloor;
@@ -99,7 +99,7 @@ public class Jeff extends GameObject implements InputProcessor {
                 setPosition(getPosition().add(getSize().x * .5f - 15, 0));
                 setSize(30, 60);
                 _color = new Color(Constants.JEFF_COLOR);
-                _jumpForce = 800f;
+                _jumpForce = 820f;
                 break;
             case 1:
                 setPosition(getPosition().add(getSize().x * .5f - 75, 0));

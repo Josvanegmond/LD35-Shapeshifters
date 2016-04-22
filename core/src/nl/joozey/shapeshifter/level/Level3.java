@@ -101,7 +101,7 @@ public class Level3 extends Level {
             _startFinalBattle();
         }
 
-        if (_rinn.getStage() == 0 && gameObject instanceof Rinn) {
+        if (gameObject != null && _rinn != null && _rinn.getStage() == 0 && gameObject instanceof Rinn) {
             ((Rinn) gameObject).moveRight();
         }
     }
@@ -141,7 +141,7 @@ public class Level3 extends Level {
 
             @Override
             public void finish() {
-                if(_jeff.getSize().x > 0) {
+                if(_jeff.getSize().x > 5) {
                     _startFinalAnimation();
                 } else {
                     _startDeathAnimation();
@@ -151,6 +151,7 @@ public class Level3 extends Level {
     }
 
     private void _startDeathAnimation() {
+        _jeff.setPosition(400, 300);
         new CountTimer(new CountTimer.Task() {
 
             @Override
@@ -158,18 +159,18 @@ public class Level3 extends Level {
                 for(CorruptEnemy e : _levelManager.getCorruptEnemies()) {
                     e.invade();
                 }
-
-                _jeff.freeze();
+                _jeff.setPosition(400, 300);
             }
 
             @Override
             public void finish() {
-                _jeff.freeze();
                 setMessage("From your ash, the fairy blimps escape and heal the land. THE END.");
 
+                _jeff.setPosition(400, 300);
                 for(int i = 0; i < 7; i++) {
                     _shootFairy(_jeff.getPosition(), i);
                 }
+                _jeff.freeze();
             }
         }, 300, 2, 0.03f);
     }
